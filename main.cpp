@@ -732,7 +732,7 @@ void CreateIsland(int Island[ISLANDH][ISLANDW]) {
 	int path_h = ISLANDH / 2;
 	int path_w = ISLANDW / 2;
 
-	for (int a = 0; a < 20; a++) {
+	for (int a = 0; a < 50; a++) {
 
 		int direction = rand() % 4 + 1;
 

@@ -9,8 +9,8 @@ void Player::Destroy()
 
 void Player::Init(ALLEGRO_BITMAP *image, double copy_x, double copy_y, int copy_dir_x, int copy_dir_y, int copy_vel_x, int copy_vel_y)
 {
-	frameWidth = 13*3;
-	frameHeight = 32*3;
+	frameWidth = 39;
+	frameHeight = 96;
 	Units::Init(copy_x, copy_y, copy_vel_x, copy_vel_y, copy_dir_x, copy_dir_y, frameWidth, frameHeight, PLAYER, TIER1C, 5, 0, 0);
 	SetID(PLAYER);
 	SetAlive(true);
@@ -30,13 +30,6 @@ void Player::Init(ALLEGRO_BITMAP *image, double copy_x, double copy_y, int copy_
 void Player::Update(double cameraX, double cameraY)
 {
 	Units::Update(cameraX, cameraY);
-	timer++;
-	if (timer >= 60){
-		timer = 0;
-		curFrame++;
-		if (curFrame >= maxFrame)
-			curFrame= 0;
-	}
 }
 
 void Player::Render()
@@ -49,7 +42,10 @@ void Player::Render()
 		Units::Render();
 		int fx = curFrame*frameWidth;
 		int fy = curAnim*frameHeight;
-		al_draw_bitmap_region(image, fx, fy, frameWidth, frameHeight, x, y, 0);
+
+		al_draw_tinted_bitmap_region(image, al_map_rgba_f(225, 225, 225, 0.5), 78, 0, 36, 18, x, BaseY - 12, 0);//shadow underneath character
+		al_draw_bitmap_region(image, fx, fy, frameWidth, frameHeight, x, y, 0);	
+		
 	}
 }
 
@@ -75,18 +71,19 @@ void Player::ResetAnimation(int position)
 	Player::StateHandler();
 }
 
+//sets up the various variables that come alongside the ANIM states
 void Player::StateHandler()
 {
-	if (curAnim == IDLE) {
-		frameWidth = 39;
-		frameHeight = 96;
+	if (Action == IDLE) {
+		curAnim = 0;
 		maxFrame = 2;
-		curFrame = 0;
 	}
-	if (curAnim == MOVING) {
+	if (Action == LEFT) {
+		curAnim = 1;
 		maxFrame = 2;
-		curFrame = 0;
-		frameWidth = 93;
-		frameHeight = 96;
+	}
+	if (Action == RIGHT) {
+		curAnim = 2;
+		maxFrame = 2;
 	}
 }

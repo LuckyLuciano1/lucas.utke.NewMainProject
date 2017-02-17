@@ -11,7 +11,8 @@ protected:
 	int health;//protected is so that obejetcs who inherit variables from Units can modify/access them
 	int timer;
 	int TimeUp;
-	enum ACTION { IDLE, MOVING , UP, LEFT, RIGHT, DOWN, DODGING, ATTACKING, PECKING};//list of all the various animations (+movements/actions) that can be taken for all units.
+	enum ACTION { IDLE, LEFT, RIGHT, DODGING, ATTACKING, PECKING, BLOCKING};//list of all the various animations (+movements/actions) that can be taken for all units.
+	int Action;
 public:
 	
 	Units();
