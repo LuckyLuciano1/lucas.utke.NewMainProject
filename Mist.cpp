@@ -28,7 +28,7 @@ void Mist::Init(ALLEGRO_BITMAP *image, double copy_x, double copy_y, int copy_Mi
 	SetID(MISC);
 	SetAlive(true);
 
-	
+
 	MistID = copy_MistID;
 	image_x = 0;
 	if (MistID == FIRE)
@@ -66,6 +66,6 @@ void Mist::Update(double cameraX, double cameraY)
 //does not use animation rows, sprites, etc. unnecessary for basic box sprite.
 void Mist::Render()
 {
-		GameObject::Render();
-		al_draw_tinted_bitmap_region(image, al_map_rgba_f(1, 1, 1, 0.3), image_x, image_y, frameWidth, frameHeight, x, y, 0);
+	GameObject::Render();
+	al_draw_tinted_bitmap_region(image, al_map_rgba_f(1, 1, 1, 0.3), image_x, image_y, frameWidth, frameHeight, x, y, 0);
 }

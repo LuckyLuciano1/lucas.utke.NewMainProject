@@ -22,7 +22,7 @@ void Terrain::Init(ALLEGRO_BITMAP *image, double copy_x, double copy_y, double c
 		SetID(PATH);
 	}
 
-	
+
 
 	SetAlive(true);
 
@@ -42,7 +42,7 @@ void Terrain::Update(double cameraX, double cameraY)
 //does not use animation rows, sprites, etc. unnecessary for basic box sprite.
 void Terrain::Render()
 {
-		GameObject::Render();
-		//al_draw_bitmap_region(image, fx, fy, frameWidth, frameHeight, x - frameWidth / 2, y - frameHeight / 2, 0);
-		al_draw_bitmap_region(image, image_x, image_y, frameWidth, frameHeight, x, y, 0);
+	GameObject::Render();
+	//al_draw_bitmap_region(image, fx, fy, frameWidth, frameHeight, x - frameWidth / 2, y - frameHeight / 2, 0);
+	al_draw_bitmap_region(image, image_x, image_y, frameWidth, frameHeight, x, y, 0);
 }

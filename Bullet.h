@@ -6,7 +6,7 @@ using namespace std;
 class Bullet : public Units//inheritance
 {
 private:
-	double MouseAngle;
+	double Angle;
 
 public:
 	Bullet();

@@ -1,6 +1,6 @@
 #include "Player.h"
 
-Player::Player(){}
+Player::Player() {}
 
 void Player::Destroy()
 {
@@ -30,31 +30,37 @@ void Player::Init(ALLEGRO_BITMAP *image, double copy_x, double copy_y, int copy_
 void Player::Update(double cameraX, double cameraY)
 {
 	Units::Update(cameraX, cameraY);
+	ActionTimer--;
+	cout << ActionTimer << endl;
+	if (ActionTimer == 0) {
+		Action = IDLELEFT;
+		StateHandler();
+	}
 }
 
 void Player::Render()
 {
-		Units::Render();
-		int fx = curFrame*frameWidth;
-		int fy = curAnim*frameHeight;
+	Units::Render();
+	int fx = curFrame*frameWidth;
+	int fy = curAnim*frameHeight;
 
-		al_draw_tinted_bitmap_region(image, al_map_rgba_f(225, 225, 225, 0.5), 78, 0, 36, 18, x, BaseY - 12, 0);//shadow underneath character
-		al_draw_bitmap_region(image, fx, fy, frameWidth, frameHeight, x, y, 0);	
+	al_draw_tinted_bitmap_region(image, al_map_rgba_f(225, 225, 225, 0.5), frameWidth*4, frameHeight*0, 36, 18, x, BaseY - 12, 0);//shadow underneath character
+	al_draw_bitmap_region(image, fx, fy, frameWidth, frameHeight, x, y, 0);
 }
 
-void Player::MoveUp(){ 
+void Player::MoveUp() {
 	Units::MoveUp();
 	Player::StateHandler();
 }
-void Player::MoveDown(){
+void Player::MoveDown() {
 	Units::MoveDown();
 	Player::StateHandler();
 }
-void Player::MoveLeft(){
+void Player::MoveLeft() {
 	Units::MoveLeft();
 	Player::StateHandler();
 }
-void Player::MoveRight(){ 
+void Player::MoveRight() {
 	Units::MoveRight();
 	Player::StateHandler();
 }
@@ -64,16 +70,30 @@ void Player::ResetAnimation(int position)
 	Player::StateHandler();
 }
 
+void Player::Dash(double MouseAngle) {
+	Units::Dash(MouseAngle);
+	Player::StateHandler();
+}
+
 //sets up the various variables that come alongside the Action states. called whenever Action is changed
 void Player::StateHandler()
 {
+	//dimensions and other variables will default to:
+	frameWidth = 39;
+	frameHeight = 96;
+	boundX = 39;
+	boundY = 96;
+	ActionTimer = 1;
+	velX = PLAYERVELX;
+	velY = PLAYERVELY;
+
 	if (Action == IDLELEFT) {
 		curAnim = 0;
 		maxFrame = 2;
 	}
 	else if (Action == IDLERIGHT) {
 		curAnim = 1;
-		maxFrame = 2;
+		maxFrame = 4;
 	}
 	else if (Action == MOVINGLEFT) {
 		curAnim = 2;
@@ -81,6 +101,33 @@ void Player::StateHandler()
 	}
 	else if (Action == MOVINGRIGHT) {
 		curAnim = 3;
+		maxFrame = 2;
+	}
+	else if (Action == DASHLEFT) {
+		ActionTimer = 120;
+		curAnim = 4;
+		maxFrame = 1;
+		frameWidth = 69;
+		frameHeight = 72;
+		boundX = 69;
+		boundY = 72;
+		velX = 20;
+		velY = 20;
+	}
+	else if (Action == DASHRIGHT) {
+		ActionTimer = 120;
+		curAnim = 5;
+		maxFrame = 1;
+		frameWidth = 69;
+		frameHeight = 72;
+		boundX = 69;
+		boundY = 72;
+		velX = 20;
+		velY = 20;
+	}
+	else { //defaults to IDLELEFT
+		Action = IDLELEFT;
+		curAnim = 0;
 		maxFrame = 2;
 	}
 }

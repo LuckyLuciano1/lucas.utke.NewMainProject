@@ -9,7 +9,7 @@ class GameObject
 {
 private:
 	int ID;
-	bool alive;	
+	bool alive;
 	bool origcollidable;//the original ability for an object to collide
 	bool collision;//the collision of two objects
 	bool collidable;//the ability for an object to collide
@@ -28,7 +28,7 @@ protected:
 	int boundX;//size of object within game
 	int boundY;
 
-	
+
 	double frameWidth;//size of image being displayed
 	double frameHeight;
 

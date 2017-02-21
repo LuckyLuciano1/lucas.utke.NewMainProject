@@ -34,6 +34,6 @@ void ShadowedBlock::Update(double cameraX, double cameraY)
 //does not use animation rows, sprites, etc. unnecessary for basic box sprite.
 void ShadowedBlock::Render()
 {
-		GameObject::Render();
-		al_draw_tinted_bitmap_region(image, al_map_rgba_f(127, 127, 127, .6), image_x*DIMW, image_y*DIMH, frameWidth, frameHeight, x, y, 0);
+	GameObject::Render();
+	al_draw_tinted_bitmap_region(image, al_map_rgba_f(127, 127, 127, .6), image_x*DIMW, image_y*DIMH, frameWidth, frameHeight, x, y, 0);
 }

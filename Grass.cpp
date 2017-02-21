@@ -19,8 +19,8 @@ void Grass::Init(ALLEGRO_BITMAP *image, double copy_x, double copy_y, double ima
 
 	frameWidth = image_size_x;
 	frameHeight = image_size_y;
-	
-	curAnim = DIMH*rand()%3;
+
+	curAnim = DIMH*rand() % 3;
 	curFrame = rand() % 2;
 	maxFrame = 3;
 
@@ -45,8 +45,8 @@ void Grass::Update(double CameraX, double CameraY)
 //does not use animation rows, sprites, etc. unnecessary for basic box sprite.
 void Grass::Render()
 {
-		GameObject::Render();
-		int fx = curFrame*frameWidth;
-		int fy = curAnim*frameHeight;
-		al_draw_bitmap_region(image, image_x + (curFrame*frameWidth), image_y*frameHeight, frameWidth, frameHeight, x, y, 0);
+	GameObject::Render();
+	int fx = curFrame*frameWidth;
+	int fy = curAnim*frameHeight;
+	al_draw_bitmap_region(image, image_x + (curFrame*frameWidth), image_y*frameHeight, frameWidth, frameHeight, x, y, 0);
 }

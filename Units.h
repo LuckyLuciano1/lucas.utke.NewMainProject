@@ -14,9 +14,11 @@ protected:
 	enum ACTION {
 		IDLELEFT, IDLERIGHT,
 		MOVINGLEFT, MOVINGRIGHT,
+		DASHLEFT, DASHRIGHT,
 		PECKING
 	};//list of all the various animations (+movements/actions) that can be taken for all units.
-	int Action;
+	int Action;//tracks which Action is being performed by Units
+	int ActionTimer;//dictates how long it is before Action is changed
 public:
 
 	Units();
@@ -35,4 +37,5 @@ public:
 	void MoveRight();
 	void MoveDown();
 	void ResetAnimation(int position);
+	void Dash(double Angle);
 };

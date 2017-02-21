@@ -30,7 +30,7 @@ void CloudBase::Init(ALLEGRO_BITMAP *image, double copy_x, double copy_y, double
 		else
 			CloudState = SHRINKING;
 
-		frameHeight = rand() % ((DIMH * 2) - (DIMH/2)) + (DIMH / 2);
+		frameHeight = rand() % ((DIMH * 2) - (DIMH / 2)) + (DIMH / 2);
 		frameWidth = frameHeight;
 	}
 
@@ -42,10 +42,10 @@ void CloudBase::Update(double cameraX, double cameraY)
 {
 	GameObject::Update(cameraX, cameraY);
 
-	if (CloudState == SHRINKING && (frameHeight <= DIMH/2 || frameWidth <= DIMW/2))//if cloud gets to small, make it regain size
+	if (CloudState == SHRINKING && (frameHeight <= DIMH / 2 || frameWidth <= DIMW / 2))//if cloud gets to small, make it regain size
 		CloudState = GROWING;
 
-	if (CloudState == GROWING && (frameHeight >= DIMH*2 || frameWidth >= DIMW*2))//if gets too large, make it shrink
+	if (CloudState == GROWING && (frameHeight >= DIMH * 2 || frameWidth >= DIMW * 2))//if gets too large, make it shrink
 		CloudState = SHRINKING;
 
 	if (CloudState == SHRINKING && rand() % 600 == 1)//chance to start growing while shrinking
@@ -57,12 +57,12 @@ void CloudBase::Update(double cameraX, double cameraY)
 
 
 	if (CloudState == SHRINKING) {
-		frameWidth-=.25;
-		frameHeight-=.25;
+		frameWidth -= .25;
+		frameHeight -= .25;
 	}
 	if (CloudState == GROWING) {
-		frameWidth+=.25;
-		frameHeight+=.25;
+		frameWidth += .25;
+		frameHeight += .25;
 	}
 
 }

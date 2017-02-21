@@ -1,6 +1,6 @@
 #include "Gun.h"
 
-Gun::Gun(){}
+Gun::Gun() {}
 
 void Gun::Destroy()
 {
@@ -38,30 +38,30 @@ void Gun::Update(double cameraX, double cameraY)
 
 void Gun::Render()
 {
-		GameObject::Render();
+	GameObject::Render();
 
-		if (MouseAngle <= 67.5 && MouseAngle >= 22.5)
-			curFrame = 2, curAnim = 0;
-		else if (MouseAngle <= 112.5 && MouseAngle >= 67.5)
-			curFrame = 1, curAnim = 0;
-		else if (MouseAngle <= 157.5 && MouseAngle >= 112.5)
-			curFrame = 0, curAnim = 0;
-		else if (MouseAngle <= 202.5 && MouseAngle >= 157.5)
-			curFrame = 0, curAnim = 1;
-		else if (MouseAngle <= 247.5 && MouseAngle >= 202.5)
-			curFrame = 0, curAnim = 2;
-		else if (MouseAngle <= 292.5 && MouseAngle >= 247.5)
-			curFrame = 1, curAnim = 2;
-		else if (MouseAngle <= 337.5 && MouseAngle >= 292.5)
-			curFrame = 2, curAnim = 2;
-		else if ((MouseAngle <= 360 && MouseAngle >= 337.5) || (MouseAngle <= 22.5 && MouseAngle >= 0))
-			curFrame = 2, curAnim = 1;
+	if (MouseAngle <= 67.5 && MouseAngle >= 22.5)
+		curFrame = 2, curAnim = 0;
+	else if (MouseAngle <= 112.5 && MouseAngle >= 67.5)
+		curFrame = 1, curAnim = 0;
+	else if (MouseAngle <= 157.5 && MouseAngle >= 112.5)
+		curFrame = 0, curAnim = 0;
+	else if (MouseAngle <= 202.5 && MouseAngle >= 157.5)
+		curFrame = 0, curAnim = 1;
+	else if (MouseAngle <= 247.5 && MouseAngle >= 202.5)
+		curFrame = 0, curAnim = 2;
+	else if (MouseAngle <= 292.5 && MouseAngle >= 247.5)
+		curFrame = 1, curAnim = 2;
+	else if (MouseAngle <= 337.5 && MouseAngle >= 292.5)
+		curFrame = 2, curAnim = 2;
+	else if ((MouseAngle <= 360 && MouseAngle >= 337.5) || (MouseAngle <= 22.5 && MouseAngle >= 0))
+		curFrame = 2, curAnim = 1;
 
 
-		int fx = curFrame * frameWidth;
-		int fy = curAnim * frameHeight;
-		al_draw_bitmap_region(image, fx, fy, frameWidth, frameHeight, x + frameWidth/2 - ((2-curFrame)*frameWidth/2), y + frameHeight/2 - ((2-curAnim)*frameHeight/2), 0);
+	int fx = curFrame * frameWidth;
+	int fy = curAnim * frameHeight;
+	al_draw_bitmap_region(image, fx, fy, frameWidth, frameHeight, x + frameWidth / 2 - ((2 - curFrame)*frameWidth / 2), y + frameHeight / 2 - ((2 - curAnim)*frameHeight / 2), 0);
 
-		//cout << MouseAngle << endl;
-		//al_draw_tinted_scaled_rotated_bitmap_region(image, fx, fy, frameWidth, frameHeight, al_map_rgba(1, 1, 1, 1), x - ((2 - curFrame)*frameWidth / 2), y - ((2 - curAnim)*frameHeight / 2), x - ((2 - curFrame)*frameWidth / 2), y - ((2 - curAnim)*frameHeight / 2), 1, 1, MouseAngle, 0);
+	//cout << MouseAngle << endl;
+	//al_draw_tinted_scaled_rotated_bitmap_region(image, fx, fy, frameWidth, frameHeight, al_map_rgba(1, 1, 1, 1), x - ((2 - curFrame)*frameWidth / 2), y - ((2 - curAnim)*frameHeight / 2), x - ((2 - curFrame)*frameWidth / 2), y - ((2 - curAnim)*frameHeight / 2), 1, 1, MouseAngle, 0);
 }

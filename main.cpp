@@ -429,10 +429,11 @@ int main(int argc, char **argv) {
 
 				if (keys[NUM_2])//temp
 				{
-					Mist *mist = new Mist();
-					mist->Init(ColorImage, mousex, mousey, SMOKE);
-					objects.push_back(mist);
-					//keys[NUM_2] = false;
+					player->Dash(MouseAngle);
+					//Mist *mist = new Mist();
+					//mist->Init(ColorImage, mousex, mousey, SMOKE);
+					//objects.push_back(mist);
+					keys[NUM_2] = false;
 				}
 				if (keys[NUM_3])//temp
 				{
@@ -450,7 +451,7 @@ int main(int argc, char **argv) {
 				{
 					if (!(*iter)->Collidable()) continue;//checks whether collidable or whether terrain. if terrain is checked, due to it being a large #, will crash game. 
 
-					//if ((*iter)->GetTier() == TIER1C) continue;
+														 //if ((*iter)->GetTier() == TIER1C) continue;
 					for (iter2 = iter; iter2 != objects.end(); ++iter2)
 					{
 						//if (sqrt(((*iter)->GetX() - (*iter2)->GetX())*((*iter)->GetX() - (*iter2)->GetX()) + ((*iter)->GetY() - (*iter2)->GetY())*((*iter)->GetY() - (*iter2)->GetY())) >= COL_RANGEX / 2) continue;
@@ -508,14 +509,14 @@ int main(int argc, char **argv) {
 
 			al_draw_textf(font18, al_map_rgb(255, 0, 255), 5, 5, 0, "FPS: %i", gameFPS);	//display FPS on screen
 
-		//BEGIN PROJECT RENDER================
+																							//BEGIN PROJECT RENDER================
 			if (state == TITLE)
 				TitleScreen->Render();
 			else if (PLAYING) {
 				al_draw_bitmap(bgImage, 0, 0, 0);//setting sun background
 				for (iter = objects.begin(); iter != objects.end(); ++iter) {//cloud is temp measure
-					if((*iter)->GetRender())//based off of 'renderable' variable
-					(*iter)->Render();
+					if ((*iter)->GetRender())//based off of 'renderable' variable
+						(*iter)->Render();
 				}
 			}
 			//FLIP BUFFERS========================
@@ -587,7 +588,7 @@ void ChangeState(ALLEGRO_BITMAP *TerrainImage, ALLEGRO_BITMAP *bgImage, ALLEGRO_
 
 		NewMap(TerrainImage, bgImage, CloudImage, GrassImage, ColorImage, Map, CloudMap, cameraXPos, cameraYPos);//function to create islands
 
-		//spawns in player
+																												 //spawns in player
 		for (int y = 0; y < MAPH; y++) {
 			for (int x = 0; x < MAPW; x++) {
 				if (Map[y][x] == GRASS_BASE) {
@@ -693,28 +694,25 @@ void NewMap(ALLEGRO_BITMAP *TerrainImage, ALLEGRO_BITMAP *bgImage, ALLEGRO_BITMA
 
 	/*
 	for (int b = 0; b < 100; b++) {//generates smaller clouds that do not conform to the islands
-		int path_h = rand() % MAPH;
-		int path_w = rand() % MAPW;
-		for (int a = 0; a < 5; a++) {
-
-			int direction = rand() % 4 + 1;
-
-			if (direction == 1) {//up		
-				path_h -= 1;
-			}
-			else if (direction == 2) {//down
-				path_h += 1;
-			}
-			else if (direction == 3) {//left
-				path_w -= 1;
-			}
-			else if (direction == 4) {//right
-				path_w += 1;
-			}
-
-			if ((path_h < MAPH && path_h > 0 && path_w < MAPW && path_w > 0) && Map[path_h][path_w] == 0)
-				CloudMap[path_h][path_w] = true;
-		}
+	int path_h = rand() % MAPH;
+	int path_w = rand() % MAPW;
+	for (int a = 0; a < 5; a++) {
+	int direction = rand() % 4 + 1;
+	if (direction == 1) {//up
+	path_h -= 1;
+	}
+	else if (direction == 2) {//down
+	path_h += 1;
+	}
+	else if (direction == 3) {//left
+	path_w -= 1;
+	}
+	else if (direction == 4) {//right
+	path_w += 1;
+	}
+	if ((path_h < MAPH && path_h > 0 && path_w < MAPW && path_w > 0) && Map[path_h][path_w] == 0)
+	CloudMap[path_h][path_w] = true;
+	}
 	}*/
 	AllegroOverlay(TerrainImage, bgImage, CloudImage, GrassImage, ColorImage, CloudMap, Map, MapDetail, cameraXPos, cameraYPos);
 }
@@ -770,21 +768,20 @@ void CreateIsland(int Island[ISLANDH][ISLANDW]) {
 	}
 	//adding in scaffold within brick
 	/*for (int y = 0; y <= ISLANDH; y++) {
-		for (int x = 0; x <= ISLANDW; x++) {
-			if (rand() % 2 + 1 == 1 &&
-				Island[y + 1][x] != GRASS_FLOOR &&
-				Island[y - 1][x] != GRASS_FLOOR &&
-				Island[y][x + 1] != GRASS_FLOOR &&
-				Island[y][x - 1] != GRASS_FLOOR &&
-				Island[y + 1][x + 1] != GRASS_FLOOR &&
-				Island[y + 1][x - 1] != GRASS_FLOOR &&
-				Island[y - 1][x + 1] != GRASS_FLOOR &&
-				Island[y - 1][x - 1] != GRASS_FLOOR) {
-
-				if (Island[y][x] == BRICK_FLOOR)
-					Island[y][x] = SCAFFOLD_FLOOR;
-			}
-		}
+	for (int x = 0; x <= ISLANDW; x++) {
+	if (rand() % 2 + 1 == 1 &&
+	Island[y + 1][x] != GRASS_FLOOR &&
+	Island[y - 1][x] != GRASS_FLOOR &&
+	Island[y][x + 1] != GRASS_FLOOR &&
+	Island[y][x - 1] != GRASS_FLOOR &&
+	Island[y + 1][x + 1] != GRASS_FLOOR &&
+	Island[y + 1][x - 1] != GRASS_FLOOR &&
+	Island[y - 1][x + 1] != GRASS_FLOOR &&
+	Island[y - 1][x - 1] != GRASS_FLOOR) {
+	if (Island[y][x] == BRICK_FLOOR)
+	Island[y][x] = SCAFFOLD_FLOOR;
+	}
+	}
 	}
 	*/
 	//adding in mixed blocks:
@@ -1055,7 +1052,7 @@ void AllegroOverlay(ALLEGRO_BITMAP *TerrainImage, ALLEGRO_BITMAP *bgImage, ALLEG
 		}
 	}//main loop
 
-	//creates border around islands to restrict movement
+	 //creates border around islands to restrict movement
 	for (int y = 0; y < MAPH; y++) {
 		for (int x = 0; x < MAPW; x++) {
 			if (CloudMap[y][x] == true ||

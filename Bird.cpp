@@ -1,6 +1,6 @@
 #include "Bird.h"
 
-Bird::Bird(){}
+Bird::Bird() {}
 
 void Bird::Destroy()
 {
@@ -33,12 +33,12 @@ void Bird::Init(ALLEGRO_BITMAP *image, double copy_x, double copy_y, int image_s
 void Bird::Update(double cameraX, double cameraY)
 {
 	Units::Update(cameraX, cameraY);
-	
+
 	timer++;
-	if (timer >= 60){
+	if (timer >= 60) {
 		timer = 0;//restart timer every second
 		curFrame++;
-		if (curFrame >= maxFrame){	//comes to end of animation
+		if (curFrame >= maxFrame) {	//comes to end of animation
 			if (rand() % 3 == 1) {
 				curAnim = PECKING;
 			}
@@ -52,20 +52,20 @@ void Bird::Update(double cameraX, double cameraY)
 
 void Bird::Render()
 {
-		Units::Render();
-		int fx = curFrame*frameWidth;
-		int fy = curAnim*frameHeight;
+	Units::Render();
+	int fx = curFrame*frameWidth;
+	int fy = curAnim*frameHeight;
 
-		al_draw_bitmap_region(image, fx, fy, frameWidth, frameHeight, x, y, 0);
+	al_draw_bitmap_region(image, fx, fy, frameWidth, frameHeight, x, y, 0);
 }
 
 void Bird::StateHandler()
 {
-	if (curAnim == IDLE){
+	if (curAnim == IDLE) {
 		maxFrame = 8;
 		curFrame = 0;
 	}
-	else if (curAnim == PECKING){
+	else if (curAnim == PECKING) {
 		maxFrame = 6;
 		curFrame = 0;
 	}
