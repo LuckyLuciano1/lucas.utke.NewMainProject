@@ -63,7 +63,7 @@ void GameObject::Update(double cameraX, double cameraY)
 
 	x += cameraX;
 	y += cameraY;
-	
+
 	BaseY = y + boundY;
 
 	if (origcollidable == true) {
@@ -75,6 +75,15 @@ void GameObject::Update(double cameraX, double cameraY)
 		else
 			collidable = false;
 	}
+
+	if (x > -frameWidth * 2 &&//will not render if outside console window
+		x < SCREENW + frameWidth * 2 &&
+		y > -frameHeight * 2 &&
+		y < SCREENH + frameHeight * 2)
+		renderable = true;
+	else
+		renderable = false;
+
 }
 
 void GameObject::Render()

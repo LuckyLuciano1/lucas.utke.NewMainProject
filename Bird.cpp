@@ -52,16 +52,11 @@ void Bird::Update(double cameraX, double cameraY)
 
 void Bird::Render()
 {
-	if (x > 0 &&//will not render if outside console window
-		x < SCREENW &&
-		y > 0 &&
-		y < SCREENH){
 		Units::Render();
 		int fx = curFrame*frameWidth;
 		int fy = curAnim*frameHeight;
 
 		al_draw_bitmap_region(image, fx, fy, frameWidth, frameHeight, x, y, 0);
-	}
 }
 
 void Bird::StateHandler()

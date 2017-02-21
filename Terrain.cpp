@@ -42,12 +42,7 @@ void Terrain::Update(double cameraX, double cameraY)
 //does not use animation rows, sprites, etc. unnecessary for basic box sprite.
 void Terrain::Render()
 {
-	if (x > -frameWidth * 2 &&//will not render if outside console window
-		x < SCREENW + frameWidth * 2 &&
-		y > -frameHeight * 2 &&
-		y < SCREENH + frameHeight * 2) {
 		GameObject::Render();
 		//al_draw_bitmap_region(image, fx, fy, frameWidth, frameHeight, x - frameWidth / 2, y - frameHeight / 2, 0);
 		al_draw_bitmap_region(image, image_x, image_y, frameWidth, frameHeight, x, y, 0);
-	}
 }

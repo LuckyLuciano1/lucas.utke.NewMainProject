@@ -34,19 +34,12 @@ void Player::Update(double cameraX, double cameraY)
 
 void Player::Render()
 {
-	if (x > 0 &&//will not render if outside console window
-		x < SCREENW &&
-		y > 0 &&
-		y < SCREENH){
-
 		Units::Render();
 		int fx = curFrame*frameWidth;
 		int fy = curAnim*frameHeight;
 
 		al_draw_tinted_bitmap_region(image, al_map_rgba_f(225, 225, 225, 0.5), 78, 0, 36, 18, x, BaseY - 12, 0);//shadow underneath character
 		al_draw_bitmap_region(image, fx, fy, frameWidth, frameHeight, x, y, 0);	
-		
-	}
 }
 
 void Player::MoveUp(){ 
@@ -71,19 +64,23 @@ void Player::ResetAnimation(int position)
 	Player::StateHandler();
 }
 
-//sets up the various variables that come alongside the ANIM states
+//sets up the various variables that come alongside the Action states. called whenever Action is changed
 void Player::StateHandler()
 {
-	if (Action == IDLE) {
+	if (Action == IDLELEFT) {
 		curAnim = 0;
 		maxFrame = 2;
 	}
-	if (Action == LEFT) {
+	else if (Action == IDLERIGHT) {
 		curAnim = 1;
 		maxFrame = 2;
 	}
-	if (Action == RIGHT) {
+	else if (Action == MOVINGLEFT) {
 		curAnim = 2;
+		maxFrame = 2;
+	}
+	else if (Action == MOVINGRIGHT) {
+		curAnim = 3;
 		maxFrame = 2;
 	}
 }

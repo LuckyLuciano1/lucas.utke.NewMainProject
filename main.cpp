@@ -514,6 +514,7 @@ int main(int argc, char **argv) {
 			else if (PLAYING) {
 				al_draw_bitmap(bgImage, 0, 0, 0);//setting sun background
 				for (iter = objects.begin(); iter != objects.end(); ++iter) {//cloud is temp measure
+					if((*iter)->GetRender())//based off of 'renderable' variable
 					(*iter)->Render();
 				}
 			}

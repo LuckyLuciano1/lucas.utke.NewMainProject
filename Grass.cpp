@@ -45,13 +45,8 @@ void Grass::Update(double CameraX, double CameraY)
 //does not use animation rows, sprites, etc. unnecessary for basic box sprite.
 void Grass::Render()
 {
-	if (x > -frameWidth * 2 &&//will not render if outside console window
-		x < SCREENW + frameWidth * 2 &&
-		y > -frameHeight * 2 &&
-		y < SCREENH + frameHeight * 2) {
 		GameObject::Render();
 		int fx = curFrame*frameWidth;
 		int fy = curAnim*frameHeight;
 		al_draw_bitmap_region(image, image_x + (curFrame*frameWidth), image_y*frameHeight, frameWidth, frameHeight, x, y, 0);
-	}
 }

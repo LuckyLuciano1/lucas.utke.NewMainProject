@@ -66,12 +66,6 @@ void Mist::Update(double cameraX, double cameraY)
 //does not use animation rows, sprites, etc. unnecessary for basic box sprite.
 void Mist::Render()
 {
-	if (x > -frameWidth * 2 &&//will not render if outside console window
-		x < SCREENW + frameWidth * 2 &&
-		y > -frameHeight * 2 &&
-		y < SCREENH + frameHeight * 2) {
-
 		GameObject::Render();
 		al_draw_tinted_bitmap_region(image, al_map_rgba_f(1, 1, 1, 0.3), image_x, image_y, frameWidth, frameHeight, x, y, 0);
-	}
 }

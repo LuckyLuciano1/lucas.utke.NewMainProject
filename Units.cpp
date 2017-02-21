@@ -8,7 +8,7 @@ Units::Units(){
 /*
 explanation of animation and how it works for units:
 
-curAnim (vertical) and curFrame (horizontal) both tell the position of the desired frame in the image.
+curAnim (vertical) and curFrame (horizontal) both tell the position of the desired frame in the image, when mulitplied by frameHeihgt/frameWidth.
 curFrame increases until it hits maxFrame, at which point it resets (decided in Update)
 curAnim and maxFrame are decided by the Action variable, which keeps track of which ACTION state the unit is in. curAnim and maxFrame are decided within StateHandler.
 */
@@ -44,36 +44,36 @@ void Units::Destroy()
 }
 
 void Units::MoveUp() {
-	if (Action == LEFT)
-		Action = LEFT;
-	else if (Action == RIGHT)
-		Action = RIGHT;
+	if (Action == MOVINGRIGHT || Action == IDLERIGHT)
+		Action = MOVINGRIGHT;
 	else
-		Action = LEFT;
+		Action = MOVINGLEFT;
 	dirY = -1;
 }
 void Units::MoveDown() {
-	if (Action == LEFT)
-		Action = LEFT;
-	else if (Action == RIGHT)
-		Action = RIGHT;
+
+	if (Action == MOVINGRIGHT || Action == IDLERIGHT)
+		Action = MOVINGRIGHT;
 	else
-		Action = LEFT;
+		Action = MOVINGLEFT;
 	dirY = 1;
 }
 void Units::MoveLeft() {
-	Action = LEFT;
+	Action = MOVINGLEFT;
 	dirX = -1;
 }
 void Units::MoveRight() {
-	Action = RIGHT;
+	Action = MOVINGRIGHT;
 	dirX = 1;
 }
 void Units::ResetAnimation(int position)
 {
 	if (position == 1)
 	{
-		Action = IDLE;
+		if(Action == MOVINGLEFT)
+			Action = IDLELEFT;
+		if (Action == MOVINGRIGHT)
+			Action = IDLERIGHT;
 		dirY = 0;
 	}
 	else

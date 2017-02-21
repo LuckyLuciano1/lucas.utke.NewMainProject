@@ -38,11 +38,6 @@ void Gun::Update(double cameraX, double cameraY)
 
 void Gun::Render()
 {
-	if (x > 0 &&//will not render if outside console window
-		x < SCREENW &&
-		y > 0 &&
-		y < SCREENH){
-
 		GameObject::Render();
 
 		if (MouseAngle <= 67.5 && MouseAngle >= 22.5)
@@ -69,5 +64,4 @@ void Gun::Render()
 
 		//cout << MouseAngle << endl;
 		//al_draw_tinted_scaled_rotated_bitmap_region(image, fx, fy, frameWidth, frameHeight, al_map_rgba(1, 1, 1, 1), x - ((2 - curFrame)*frameWidth / 2), y - ((2 - curAnim)*frameHeight / 2), x - ((2 - curFrame)*frameWidth / 2), y - ((2 - curAnim)*frameHeight / 2), 1, 1, MouseAngle, 0);
-	}
 }

@@ -70,11 +70,6 @@ void CloudBase::Update(double cameraX, double cameraY)
 //does not use animation rows, sprites, etc. unnecessary for basic box sprite.
 void CloudBase::Render()
 {
-	if (x > -frameWidth * 2 &&//will not render if outside console window
-		x < SCREENW + frameWidth * 2 &&
-		y > -frameHeight * 2 &&
-		y < SCREENH + frameHeight * 2) {
-		GameObject::Render();
-		al_draw_tinted_bitmap_region(image, al_map_rgba_f(125, 125, 125, 0.5), image_x, image_y, frameWidth, frameHeight, x + (DIMW - frameWidth) / 2, y + (DIMH - frameHeight) / 2, 0);
-	}
+	GameObject::Render();
+	al_draw_tinted_bitmap_region(image, al_map_rgba_f(125, 125, 125, 0.5), image_x, image_y, frameWidth, frameHeight, x + (DIMW - frameWidth) / 2, y + (DIMH - frameHeight) / 2, 0);
 }

@@ -9,11 +9,11 @@ class GameObject
 {
 private:
 	int ID;
-	bool alive;
-
-	bool collidable;
-	bool origcollidable;
-	bool collision;
+	bool alive;	
+	bool origcollidable;//the original ability for an object to collide
+	bool collision;//the collision of two objects
+	bool collidable;//the ability for an object to collide
+	bool renderable;//the ability for an object to render
 
 protected:
 	double x;//position of object within game
@@ -80,9 +80,11 @@ public:
 	bool GetCollision() { return collision; };
 	void SetCollision(bool collision) { GameObject::collision = collision; };
 
+	bool GetRender() { return renderable; };
+	void SetRender(bool renderable) { GameObject::renderable = renderable; };
+
 	bool GetAlive() { return alive; }
 	void SetAlive(bool alive) { GameObject::alive = alive; }
-
 
 	bool GetCollidable() { return collidable; }
 	void SetCollidable(bool collidable) { GameObject::collidable = collidable; }

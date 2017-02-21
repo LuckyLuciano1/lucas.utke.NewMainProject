@@ -7,12 +7,6 @@ class Player : public Units//inheritance
 {
 private:
 
-	bool Up;
-	bool Down;
-	bool Left;
-	bool Right;
-	bool Reflect;
-
 public:
 	Player();
 	void Destroy();

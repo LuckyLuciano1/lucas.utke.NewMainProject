@@ -40,15 +40,10 @@ void Bullet::Update(double cameraX, double cameraY)
 
 void Bullet::Render()
 {
-	if (x > 0 &&//will not render if outside console window
-		x < SCREENW &&
-		y > 0 &&
-		y < SCREENH) {
 		Units::Render();
 		int fx = curFrame * frameWidth;
 		int fy = curAnim * frameHeight;
 
 		al_draw_rotated_bitmap(image, frameWidth / 2, frameHeight / 2, x + frameWidth / 2, y + frameHeight / 2, MouseAngle, 0);
 		//al_draw_tinted_bitmap(image, al_map_rgba_f(1, 1, 1, 0.5), x + frameWidth / 2, y + frameHeight / 2, 0);
-	}
 }
