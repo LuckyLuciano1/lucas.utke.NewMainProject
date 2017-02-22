@@ -32,10 +32,11 @@ void Player::Update(double cameraX, double cameraY)
 	Units::Update(cameraX, cameraY);
 	ActionTimer--;
 	cout << ActionTimer << endl;
-	if (ActionTimer == 0) {
-		Action = IDLELEFT;
+	if (ActionTimer < 0) {
+		ResetAnimation(1);
 		StateHandler();
 	}
+	StateHandler();
 }
 
 void Player::Render()
@@ -83,51 +84,75 @@ void Player::StateHandler()
 	frameHeight = 96;
 	boundX = 39;
 	boundY = 96;
-	ActionTimer = 1;
+	//ActionTimer = 1;
 	velX = PLAYERVELX;
 	velY = PLAYERVELY;
-
+	dirX = 0;
+	dirY = 0;
 	if (Action == IDLELEFT) {
+		dirX = 0;
+		dirY = 0;
 		curAnim = 0;
 		maxFrame = 2;
 	}
 	else if (Action == IDLERIGHT) {
+		dirX = 0;
+		dirY = 0;
 		curAnim = 1;
 		maxFrame = 4;
 	}
 	else if (Action == MOVINGLEFT) {
+		dirX = -1;
 		curAnim = 2;
 		maxFrame = 2;
 	}
 	else if (Action == MOVINGRIGHT) {
+		dirX = 1;
+		curAnim = 3;
+		maxFrame = 2;
+	}
+	else if (Action == MOVINGUPLEFT) {
+		dirX = -1;
+		dirY = -1;
+		curAnim = 2;
+		maxFrame = 2;
+	}
+	else if (Action == MOVINGUPRIGHT) {
+		dirX = 1;
+		dirY = -1;
+		curAnim = 3;
+		maxFrame = 2;
+	}
+	else if (Action == MOVINGDOWNLEFT) {
+		dirX = -1;
+		dirY = 1;
+		curAnim = 2;
+		maxFrame = 2;
+	}
+	else if (Action == MOVINGDOWNRIGHT) {
+		dirX = 1;
+		dirY = 1;
 		curAnim = 3;
 		maxFrame = 2;
 	}
 	else if (Action == DASHLEFT) {
-		ActionTimer = 120;
 		curAnim = 4;
 		maxFrame = 1;
 		frameWidth = 69;
 		frameHeight = 72;
-		boundX = 69;
-		boundY = 72;
+		//boundX = 69;
+		//boundY = 72;
 		velX = 20;
 		velY = 20;
 	}
 	else if (Action == DASHRIGHT) {
-		ActionTimer = 120;
 		curAnim = 5;
 		maxFrame = 1;
 		frameWidth = 69;
 		frameHeight = 72;
-		boundX = 69;
-		boundY = 72;
+		//boundX = 69;
+		//boundY = 72;
 		velX = 20;
 		velY = 20;
-	}
-	else { //defaults to IDLELEFT
-		Action = IDLELEFT;
-		curAnim = 0;
-		maxFrame = 2;
 	}
 }

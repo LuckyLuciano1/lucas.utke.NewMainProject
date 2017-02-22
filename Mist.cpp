@@ -10,11 +10,11 @@ void Mist::Destroy()
 void Mist::Init(ALLEGRO_BITMAP *image, double copy_x, double copy_y, int copy_MistID)
 {
 
-	RandDirX = (rand() % 100);
+	RandDirX = (rand() % 20);
 	if (rand() % 2 == 1)
 		RandDirX *= -1;
 	RandDirY = (rand() % 100);
-	if (rand() % 2 == 1)
+	//if (rand() % 2 == 1)
 		RandDirY *= -1;
 
 	RandSize = rand() % 30 + 10;//size from 10 - 30
@@ -45,13 +45,13 @@ void Mist::Init(ALLEGRO_BITMAP *image, double copy_x, double copy_y, int copy_Mi
 void Mist::Update(double cameraX, double cameraY)
 {
 	GameObject::Update(cameraX, cameraY);
-	frameWidth--;
-	frameHeight--;
+	frameWidth-=.5;
+	frameHeight-=.5;
 	if (MistID == FIRE) {
-		if ((frameWidth > 20) || (frameHeight > 20)) {
+		if ((frameWidth > 15) || (frameHeight > 15)) {
 			image_y = 0;
 		}
-		else if ((frameWidth <= 20 && frameWidth > 10) || (frameHeight <= 20 && frameHeight > 10)) {
+		else if ((frameWidth <= 15 && frameWidth > 10) || (frameHeight <= 15 && frameHeight > 10)) {
 			image_y = 500;
 		}
 		else if (frameWidth <= 10 || frameHeight <= 10) {
@@ -67,5 +67,5 @@ void Mist::Update(double cameraX, double cameraY)
 void Mist::Render()
 {
 	GameObject::Render();
-	al_draw_tinted_bitmap_region(image, al_map_rgba_f(1, 1, 1, 0.3), image_x, image_y, frameWidth, frameHeight, x, y, 0);
+	al_draw_tinted_bitmap_region(image, al_map_rgba_f(1, 1, 1, 0.3), image_x, image_y, frameWidth, frameHeight, x - frameWidth/2, y-frameHeight/2, 0);
 }

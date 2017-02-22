@@ -391,8 +391,8 @@ int main(int argc, char **argv) {
 				}
 				if (keys[SHIFT])
 				{
-					player->ResetAnimation(1);
-					player->ResetAnimation(0);
+					//player->ResetAnimation(1);
+					//player->ResetAnimation(0);
 					Gun *gun = new Gun();
 					gun->Init(GunImage, player->GetX(), player->GetY(), 50, 50, MouseAngle);
 					objects.push_back(gun);
@@ -405,7 +405,7 @@ int main(int argc, char **argv) {
 						player->MoveDown();
 					}
 					else {
-						player->ResetAnimation(1);
+						//player->ResetAnimation(1);
 					}
 
 					if (keys[LEFT]) {
@@ -415,7 +415,7 @@ int main(int argc, char **argv) {
 						player->MoveRight();
 					}
 					else {
-						player->ResetAnimation(0);
+						//player->ResetAnimation(0);
 					}
 				}
 

@@ -1,4 +1,5 @@
 #include "MistSpawner.h"
+#include "Mist.h"
 
 MistSpawner::MistSpawner() {}
 
@@ -35,6 +36,9 @@ void MistSpawner::Update(double cameraX, double cameraY)
 		frameCounter = 0;
 		//spawn mist here?
 	}
+	Mist *mist = new Mist();
+	mist->Init(ColorImage, x, y, SMOKE);
+	objects.push_back(mist);
 }
 
 //does not render, only meant to spawn mist

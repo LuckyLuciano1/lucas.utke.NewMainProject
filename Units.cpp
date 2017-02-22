@@ -48,46 +48,45 @@ void Units::Destroy()
 
 void Units::MoveUp() {
 	if (Action == MOVINGRIGHT || Action == IDLERIGHT || Action == DASHRIGHT)
-		Action = MOVINGRIGHT;
+		Action = MOVINGUPRIGHT;
 	else
-		Action = MOVINGLEFT;
-	dirY = -1;
+		Action = MOVINGUPLEFT;
+	ActionTimer = 1;
 }
 void Units::MoveDown() {
 
 	if (Action == MOVINGRIGHT || Action == IDLERIGHT || Action == DASHRIGHT)
-		Action = MOVINGRIGHT;
+		Action = MOVINGDOWNRIGHT;
 	else
-		Action = MOVINGLEFT;
-	dirY = 1;
+		Action = MOVINGDOWNLEFT;
+	ActionTimer = 1;
 }
 void Units::MoveLeft() {
 	Action = MOVINGLEFT;
-	dirX = -1;
+	ActionTimer = 1;
 }
 void Units::MoveRight() {
 	Action = MOVINGRIGHT;
-	dirX = 1;
+	ActionTimer = 1;
 }
 void Units::ResetAnimation(int position)
 {
-	if (position == 1)
-	{
-		if (Action == MOVINGLEFT)
+	cout << "RESET" << endl;
+		if (Action == MOVINGLEFT || Action == MOVINGUPLEFT || Action == MOVINGDOWNLEFT)
 			Action = IDLELEFT;
-		if (Action == MOVINGRIGHT)
+		if (Action == MOVINGRIGHT || Action == MOVINGUPRIGHT || Action == MOVINGDOWNRIGHT)
 			Action = IDLERIGHT;
-		dirY = 0;
-	}
-	else
-	{
-		//Action = IDLE;
-		dirX = 0;
-	}
+		//dirX = 0;
+		//dirY = 0;
+		ActionTimer = 0;
 }
 
 void Units::Dash(double Angle) {
 	dirX = sin((Angle + 90) / 180 * PI);
 	dirY = cos((Angle + 90) / 180 * PI);
-	Action = DASHLEFT;
+	if (Angle < 180)
+		Action = DASHLEFT;
+	else
+		Action = DASHRIGHT;
+	ActionTimer = 10;
 }

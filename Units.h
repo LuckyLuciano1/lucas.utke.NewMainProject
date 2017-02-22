@@ -14,6 +14,8 @@ protected:
 	enum ACTION {
 		IDLELEFT, IDLERIGHT,
 		MOVINGLEFT, MOVINGRIGHT,
+		MOVINGUPLEFT, MOVINGUPRIGHT,
+		MOVINGDOWNLEFT, MOVINGDOWNRIGHT,
 		DASHLEFT, DASHRIGHT,
 		PECKING
 	};//list of all the various animations (+movements/actions) that can be taken for all units.
