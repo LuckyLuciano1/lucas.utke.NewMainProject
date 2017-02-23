@@ -21,11 +21,10 @@ void Mist::Init(ALLEGRO_BITMAP *image, double copy_x, double copy_y, int copy_Mi
 	frameWidth = RandSize;
 	frameHeight = RandSize;
 
-	GameObject::Init(copy_x, copy_y, 2, 2, RandDirX / 100, RandDirY / 100, frameWidth, frameHeight, MISC, TIER1C);
+	GameObject::Init(copy_x, copy_y, 2, 2, RandDirX / 100, RandDirY / 100, frameWidth, frameHeight, MIST, TIER1C);
 
 	SetCollidable(false);
 	SetOrigCollidable(false);
-	SetID(MISC);
 	SetAlive(true);
 
 

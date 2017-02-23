@@ -3,10 +3,17 @@
 #include <iostream>
 using namespace std;
 
-class Player : public Units//inheritance
+class Player : public GameObject//inheritance
 {
 private:
-
+	int health;
+	int timer;
+	enum ACTION {
+		IDLELEFT, IDLERIGHT,
+		MOVINGLEFT, MOVINGRIGHT,
+		DASHLEFT, DASHRIGHT
+	};//list of all the various animations that the player has
+	int Action;//tracks which Action is being performed by Units
 public:
 	Player();
 	void Destroy();
@@ -15,11 +22,11 @@ public:
 	void Update(double cameraX, double cameraY);
 	void Render();
 
-	int GetHealth() { return Units::health; }
+	int GetHealth() { return health; }
 
 	void TakeDamage() { health--; }
 
-	void StateHandler();
+	void AnimationHandler();
 	void MoveUp();
 	void MoveDown();
 	void MoveLeft();

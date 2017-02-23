@@ -4,9 +4,8 @@ using namespace std;
 
 Scroller::Scroller(ALLEGRO_BITMAP *image)
 {
-	GameObject::Init(0, 0, .25, .25, 1, 0, 0, 0, DETAIL, TIER2A);
+	GameObject::Init(0, 0, .25, .25, 1, 0, 0, 0, SCROLLER, TIER2A);
 
-	SetID(DETAIL);
 	SetCollidable(false);
 	SetOrigCollidable(false);
 

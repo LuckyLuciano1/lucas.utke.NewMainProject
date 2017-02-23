@@ -2,9 +2,8 @@
 
 Background::Background(ALLEGRO_BITMAP *image)
 {
-	GameObject::Init(0, 0, 0, 0, 0, 0, 0, 0, MISC, TIER0A);
+	GameObject::Init(0, 0, 0, 0, 0, 0, 0, 0, BACKGROUND, TIER0A);
 
-	SetID(MISC);
 	SetCollidable(false);
 	SetOrigCollidable(false);
 

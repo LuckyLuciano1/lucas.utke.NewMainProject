@@ -9,11 +9,10 @@ void Grass::Destroy()
 
 void Grass::Init(ALLEGRO_BITMAP *image, double copy_x, double copy_y, double image_size_x, double image_size_y)
 {
-	GameObject::Init(copy_x, copy_y, 6, 6, 0, 0, image_size_x, image_size_y, DETAIL, TIER1C);
+	GameObject::Init(copy_x, copy_y, 6, 6, 0, 0, image_size_x, image_size_y, GRASS, TIER1C);
 
 	SetCollidable(false);
 	SetOrigCollidable(false);
-	SetID(DETAIL);
 
 	SetAlive(true);
 

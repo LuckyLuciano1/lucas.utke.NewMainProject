@@ -10,21 +10,17 @@ private:
 protected:
 	int health;//protected is so that obejetcs who inherit variables from Units can modify/access them
 	int timer;
-	int TimeUp;
-	enum ACTION {
+	enum ANIMATIONLIST {
 		IDLELEFT, IDLERIGHT,
 		MOVINGLEFT, MOVINGRIGHT,
-		MOVINGUPLEFT, MOVINGUPRIGHT,
-		MOVINGDOWNLEFT, MOVINGDOWNRIGHT,
 		DASHLEFT, DASHRIGHT,
 		PECKING
-	};//list of all the various animations (+movements/actions) that can be taken for all units.
-	int Action;//tracks which Action is being performed by Units
-	int ActionTimer;//dictates how long it is before Action is changed
+	};//list of all the various animations that can be taken for all units.
+	int Animation;//tracks which Action is being performed by Units
 public:
 
 	Units();
-	void Init(double x, double y, double velX, double velY, double dirX, double dirY, int boundX, int boundY, int ID, int TIER, int timer, int health, int TimeUp);
+	void Init(double x, double y, double velX, double velY, double dirX, double dirY, int boundX, int boundY, int ID, int TIER, int timer, int health);
 	void Update(double CameraX, double CameraY);
 	void Render();
 	void Destroy();
@@ -33,11 +29,6 @@ public:
 	void TakeDamage() { health--; }
 
 	void Collided(GameObject *otherObject);
-
-	void MoveUp();
-	void MoveLeft();
-	void MoveRight();
-	void MoveDown();
-	void ResetAnimation(int position);
-	void Dash(double Angle);
+	
+	void Pursue(GameObject *otherObject);
 };

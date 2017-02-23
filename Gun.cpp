@@ -9,10 +9,9 @@ void Gun::Destroy()
 
 void Gun::Init(ALLEGRO_BITMAP *image, double copy_x, double copy_y, int image_size_x, int image_size_y, double copy_MouseAngle)
 {
-	GameObject::Init(copy_x, copy_y, 6, 6, 0, 0, image_size_x, image_size_y, DETAIL, TIER1C);
+	GameObject::Init(copy_x, copy_y, 6, 6, 0, 0, image_size_x, image_size_y, GUN, TIER1C);
 	SetCollidable(false);
 	SetOrigCollidable(false);
-	SetID(DETAIL);
 	SetAlive(true);
 
 	maxFrame = 14;

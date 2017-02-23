@@ -31,6 +31,7 @@
 #include "ShadowedBlock.h"
 #include "CloudBase.h"
 #include "InvisibleTile.h"
+#include "Cultist.h"
 
 #define PI 3.14159265
 #define DEGREES(x) int((x)/360.0*0xFFFFFF)
@@ -46,7 +47,7 @@ void NewMap(ALLEGRO_BITMAP *TerrainImage, ALLEGRO_BITMAP *bgImage, ALLEGRO_BITMA
 
 //within NewMap
 void AllegroOverlay(ALLEGRO_BITMAP *TerrainImage, ALLEGRO_BITMAP *bgImage, ALLEGRO_BITMAP *CloudImage, ALLEGRO_BITMAP *GrassImage, ALLEGRO_BITMAP *ColorImage, bool CloudMap[MAPH][MAPW], int Map[MAPH][MAPW], int MapDetail[MAPH][MAPW], double cameraXPos, double cameraYPos);
-void Render(ALLEGRO_BITMAP *TerrainImage, double game_x, double game_y, int image_x, int image_y, int size_x, int size_y, double cameraXPos, double cameraYPos, bool collision, int ID, int TIER);
+void Render(ALLEGRO_BITMAP *TerrainImage, double game_x, double game_y, int image_x, int image_y, int size_x, int size_y, double cameraXPos, double cameraYPos, bool collision, int TIER);
 
 void CreateIsland(int Island[ISLANDH][ISLANDW]);
 void MapDetailing(int Map[MAPH][MAPW], int MapDetail[MAPH][MAPW]);
@@ -55,6 +56,10 @@ void ChangeState(ALLEGRO_BITMAP *TerrainImage, ALLEGRO_BITMAP *bgImage, ALLEGRO_
 vector<GameObject *> objects;//used to store objects
 vector<GameObject *>::iterator iter;
 vector<GameObject *>::iterator iter2;
+
+vector<Units *> units;//used to store only units (for specific collision and management of AI. units also stored within objects list).
+vector<Units *>::iterator uiter;
+vector<Units *>::iterator uiter2;
 
 bool compare(GameObject *L1, GameObject *L2);
 
@@ -110,11 +115,11 @@ int main(int argc, char **argv) {
 	ALLEGRO_BITMAP *PlayerImage = NULL;
 	ALLEGRO_BITMAP *GunImage = NULL;
 	ALLEGRO_BITMAP *BulletImage = NULL;
-
 	ALLEGRO_BITMAP *BirdImage = NULL;
 	ALLEGRO_BITMAP *CloudImage = NULL;
 	ALLEGRO_BITMAP *GrassImage = NULL;
 	ALLEGRO_BITMAP *ColorImage = NULL;
+	ALLEGRO_BITMAP *CultistImage = NULL;
 
 	ALLEGRO_SAMPLE *song = NULL;
 	ALLEGRO_SAMPLE *shot = NULL;
@@ -177,9 +182,9 @@ int main(int argc, char **argv) {
 
 	PlayerImage = al_load_bitmap("PlayerImage.png");
 	al_convert_mask_to_alpha(PlayerImage, al_map_rgb(255, 255, 255));
-	al_convert_mask_to_alpha(PlayerImage, al_map_rgb(181, 230, 29));
-	//player->Init(PlayerImage, PlayerPosX, PlayerPosY, DIMW, DIMH, 0, 0, PLAYERVELX, PLAYERVELY);
-	//objects.push_back(player);//brings player to front of images
+
+	CultistImage = al_load_bitmap("CultistImage.png");
+	al_convert_mask_to_alpha(CultistImage, al_map_rgb(255, 255, 255));
 
 	GunImage = al_load_bitmap("GunImage.png");
 	al_convert_mask_to_alpha(GunImage, al_map_rgb(255, 255, 255));
@@ -368,11 +373,6 @@ int main(int argc, char **argv) {
 				cameraXPos -= cameraXDir;
 				cameraYPos -= cameraYDir;
 
-				//cloud movement goes here
-
-
-
-				//cout << "( " << cameraXPos << ", " << cameraYPos << " )" << endl;
 				//keyboard/mouse commands
 				if (keys[MOUSE_BUTTON] && keys[SHIFT])
 				{
@@ -391,8 +391,8 @@ int main(int argc, char **argv) {
 				}
 				if (keys[SHIFT])
 				{
-					//player->ResetAnimation(1);
-					//player->ResetAnimation(0);
+					player->ResetAnimation(1);
+					player->ResetAnimation(0);
 					Gun *gun = new Gun();
 					gun->Init(GunImage, player->GetX(), player->GetY(), 50, 50, MouseAngle);
 					objects.push_back(gun);
@@ -405,7 +405,7 @@ int main(int argc, char **argv) {
 						player->MoveDown();
 					}
 					else {
-						//player->ResetAnimation(1);
+						player->ResetAnimation(1);
 					}
 
 					if (keys[LEFT]) {
@@ -415,7 +415,7 @@ int main(int argc, char **argv) {
 						player->MoveRight();
 					}
 					else {
-						//player->ResetAnimation(0);
+						player->ResetAnimation(0);
 					}
 				}
 
@@ -429,7 +429,13 @@ int main(int argc, char **argv) {
 
 				if (keys[NUM_2])//temp
 				{
-					player->Dash(MouseAngle);
+					Cultist *cultist = new Cultist();
+					cultist->Init(CultistImage, mousex, mousey);
+					objects.push_back(cultist);
+					units.push_back(cultist);
+
+					//player->Dash(MouseAngle);
+
 					//Mist *mist = new Mist();
 					//mist->Init(ColorImage, mousex, mousey, SMOKE);
 					//objects.push_back(mist);
@@ -444,6 +450,13 @@ int main(int argc, char **argv) {
 					invisibletile->Init(TerrainImage, (mousex) - cameraXPos, (mousey) - cameraYPos, 7 * DIMW, 0, DIMW, DIMH, TIER1C);
 					objects.push_back(invisibletile);*/
 					//keys[NUM_3] = false;
+				}
+
+				//telling all Units to Pursue() player (temp)
+				for (uiter = units.begin(); uiter != units.end(); ++uiter)
+				{
+					if((*uiter)->GetID()==CULTIST)
+						(*uiter)->Pursue(player);
 				}
 
 				//collisions
@@ -567,7 +580,7 @@ void ChangeState(ALLEGRO_BITMAP *TerrainImage, ALLEGRO_BITMAP *bgImage, ALLEGRO_
 	{
 		for (iter = objects.begin(); iter != objects.end(); ++iter)
 		{
-			if ((*iter)->GetID() != PLAYER && (*iter)->GetID() != MISC)
+			if ((*iter)->GetID() != PLAYER)
 				(*iter)->SetAlive(false);
 		}
 
@@ -937,48 +950,48 @@ void AllegroOverlay(ALLEGRO_BITMAP *TerrainImage, ALLEGRO_BITMAP *bgImage, ALLEG
 		for (int x = 0; x < MAPW; x++) {
 
 			if (Map[y][x] == SCAFFOLD_FLOOR) {
-				Render(TerrainImage, x, y, rand() % 7, 0, DIMW, DIMH, cameraXPos, cameraYPos, false, PATH, TIER1A);
+				Render(TerrainImage, x, y, rand() % 7, 0, DIMW, DIMH, cameraXPos, cameraYPos, false, TIER1A);
 			}
 			else if (Map[y][x] == SCAFFOLD_BASE) {
-				Render(TerrainImage, x, y, rand() % 7, 1, DIMW, DIMH, cameraXPos, cameraYPos, false, PATH, TIER0A);
+				Render(TerrainImage, x, y, rand() % 7, 1, DIMW, DIMH, cameraXPos, cameraYPos, false, TIER0A);
 			}
 			else if (Map[y][x] == BRICK_FLOOR) {
-				Render(TerrainImage, x, y, rand() % 7, 2, DIMW, DIMH, cameraXPos, cameraYPos, false, PATH, TIER1A);
+				Render(TerrainImage, x, y, rand() % 7, 2, DIMW, DIMH, cameraXPos, cameraYPos, false, TIER1A);
 			}
 			else if (Map[y][x] == BRICK_BASE) {
-				Render(TerrainImage, x, y, rand() % 7, 3, DIMW, DIMH, cameraXPos, cameraYPos, false, PATH, TIER0A);
+				Render(TerrainImage, x, y, rand() % 7, 3, DIMW, DIMH, cameraXPos, cameraYPos, false, TIER0A);
 			}
 			else if (Map[y][x] == GRASS_FLOOR) {
-				Render(TerrainImage, x, y, rand() % 7, 4, DIMW, DIMH, cameraXPos, cameraYPos, false, PATH, TIER1A);
+				Render(TerrainImage, x, y, rand() % 7, 4, DIMW, DIMH, cameraXPos, cameraYPos, false, TIER1A);
 			}
 			else if (Map[y][x] == GRASS_BASE) {
-				Render(TerrainImage, x, y, rand() % 7, 5, DIMW, DIMH, cameraXPos, cameraYPos, false, PATH, TIER0A);
+				Render(TerrainImage, x, y, rand() % 7, 5, DIMW, DIMH, cameraXPos, cameraYPos, false, TIER0A);
 			}
 
 			else if (Map[y][x] == MIX_SCAFFOLD_BRICK_LEFT_FLOOR) {
-				Render(TerrainImage, x, y, rand() % 7, 6, DIMW, DIMH, cameraXPos, cameraYPos, false, PATH, TIER1A);
+				Render(TerrainImage, x, y, rand() % 7, 6, DIMW, DIMH, cameraXPos, cameraYPos, false, TIER1A);
 			}
 			else if (Map[y][x] == MIX_SCAFFOLD_BRICK_LEFT_BASE) {
-				Render(TerrainImage, x, y, rand() % 7, 7, DIMW, DIMH, cameraXPos, cameraYPos, false, PATH, TIER0A);
+				Render(TerrainImage, x, y, rand() % 7, 7, DIMW, DIMH, cameraXPos, cameraYPos, false, TIER0A);
 			}
 			else if (Map[y][x] == MIX_SCAFFOLD_BRICK_RIGHT_FLOOR) {
-				Render(TerrainImage, x, y, rand() % 7, 8, DIMW, DIMH, cameraXPos, cameraYPos, false, PATH, TIER1A);
+				Render(TerrainImage, x, y, rand() % 7, 8, DIMW, DIMH, cameraXPos, cameraYPos, false, TIER1A);
 			}
 			else if (Map[y][x] == MIX_SCAFFOLD_BRICK_RIGHT_BASE) {
-				Render(TerrainImage, x, y, rand() % 7, 9, DIMW, DIMH, cameraXPos, cameraYPos, false, PATH, TIER0A);
+				Render(TerrainImage, x, y, rand() % 7, 9, DIMW, DIMH, cameraXPos, cameraYPos, false, TIER0A);
 			}
 
 			else if (Map[y][x] == MIX_GRASS_BRICK_LEFT_FLOOR) {
-				Render(TerrainImage, x, y, rand() % 7, 10, DIMW, DIMH, cameraXPos, cameraYPos, false, PATH, TIER1A);
+				Render(TerrainImage, x, y, rand() % 7, 10, DIMW, DIMH, cameraXPos, cameraYPos, false, TIER1A);
 			}
 			else if (Map[y][x] == MIX_GRASS_BRICK_LEFT_BASE) {
-				Render(TerrainImage, x, y, rand() % 7, 11, DIMW, DIMH, cameraXPos, cameraYPos, false, PATH, TIER0A);
+				Render(TerrainImage, x, y, rand() % 7, 11, DIMW, DIMH, cameraXPos, cameraYPos, false, TIER0A);
 			}
 			else if (Map[y][x] == MIX_GRASS_BRICK_RIGHT_FLOOR) {
-				Render(TerrainImage, x, y, rand() % 7, 12, DIMW, DIMH, cameraXPos, cameraYPos, false, PATH, TIER1A);
+				Render(TerrainImage, x, y, rand() % 7, 12, DIMW, DIMH, cameraXPos, cameraYPos, false, TIER1A);
 			}
 			else if (Map[y][x] == MIX_GRASS_BRICK_RIGHT_BASE) {
-				Render(TerrainImage, x, y, rand() % 7, 13, DIMW, DIMH, cameraXPos, cameraYPos, false, PATH, TIER0A);
+				Render(TerrainImage, x, y, rand() % 7, 13, DIMW, DIMH, cameraXPos, cameraYPos, false, TIER0A);
 			}
 		}
 	}
@@ -987,28 +1000,28 @@ void AllegroOverlay(ALLEGRO_BITMAP *TerrainImage, ALLEGRO_BITMAP *bgImage, ALLEG
 	for (int y = 0; y < MAPH; y++) {
 		for (int x = 0; x < MAPW; x++) {
 			if (MapDetail[y][x] == DETAIL_SCAFFOLD) {
-				Render(TerrainImage, x, y, 0, 14, DIMW, DIMH, cameraXPos, cameraYPos, false, PATH, TIER0B);
+				Render(TerrainImage, x, y, 0, 14, DIMW, DIMH, cameraXPos, cameraYPos, false, TIER0B);
 			}
 			else if (MapDetail[y][x] == DETAIL_BRICK) {
-				Render(TerrainImage, x, y, 1, 14, DIMW, DIMH, cameraXPos, cameraYPos, false, PATH, TIER0B);
+				Render(TerrainImage, x, y, 1, 14, DIMW, DIMH, cameraXPos, cameraYPos, false, TIER0B);
 			}
 			else if (MapDetail[y][x] == DETAIL_GRASS) {
-				Render(TerrainImage, x, y, 5, 14, DIMW, DIMH, cameraXPos, cameraYPos, false, PATH, TIER0B);
+				Render(TerrainImage, x, y, 5, 14, DIMW, DIMH, cameraXPos, cameraYPos, false, TIER0B);
 			}
 			else if (MapDetail[y][x] == DETAIL_MIX_SCAFFOLD_BRICK_LEFT) {
-				Render(TerrainImage, x, y, 2, 14, DIMW, DIMH, cameraXPos, cameraYPos, false, PATH, TIER0B);
+				Render(TerrainImage, x, y, 2, 14, DIMW, DIMH, cameraXPos, cameraYPos, false, TIER0B);
 			}
 			else if (MapDetail[y][x] == DETAIL_MIX_SCAFFOLD_BRICK_RIGHT) {
-				Render(TerrainImage, x, y, 3, 14, DIMW, DIMH, cameraXPos, cameraYPos, false, PATH, TIER0B);
+				Render(TerrainImage, x, y, 3, 14, DIMW, DIMH, cameraXPos, cameraYPos, false, TIER0B);
 			}
 			else if (MapDetail[y][x] == DETAIL_MIX_GRASS_BRICK_LEFT) {
-				Render(TerrainImage, x, y, 4, 14, DIMW, DIMH, cameraXPos, cameraYPos, false, PATH, TIER0B);
+				Render(TerrainImage, x, y, 4, 14, DIMW, DIMH, cameraXPos, cameraYPos, false, TIER0B);
 			}
 			else if (MapDetail[y][x] == DETAIL_MIX_GRASS_BRICK_RIGHT) {
-				Render(TerrainImage, x, y, 6, 14, DIMW, DIMH, cameraXPos, cameraYPos, false, PATH, TIER0B);
+				Render(TerrainImage, x, y, 6, 14, DIMW, DIMH, cameraXPos, cameraYPos, false, TIER0B);
 			}
 			else if (MapDetail[y][x] == DETAIL_BRICK_WALL) {
-				Render(TerrainImage, x, y, rand() % 7, 15, DIMW, DIMH, cameraXPos, cameraYPos, false, OBSTACLE, TIER1C);
+				Render(TerrainImage, x, y, rand() % 7, 15, DIMW, DIMH, cameraXPos, cameraYPos, false, TIER1C);
 			}
 		}
 	}
@@ -1032,10 +1045,10 @@ void AllegroOverlay(ALLEGRO_BITMAP *TerrainImage, ALLEGRO_BITMAP *bgImage, ALLEG
 	for (int y = 0; y < MAPH; y++) {
 		for (int x = 0; x < MAPW; x++) {
 			if (Map[y][x] == GRASS_FLOOR || Map[y][x] == MIX_GRASS_BRICK_RIGHT_FLOOR || Map[y][x] == MIX_GRASS_BRICK_LEFT_FLOOR) {
-				Render(TerrainImage, x + 1, y, 0, rand() % 2 + 16, DIMW, DIMH, cameraXPos, cameraYPos, false, TIER1B, PATH);//right
-				Render(TerrainImage, x, y + 1, 1, rand() % 2 + 16, DIMW, DIMH, cameraXPos, cameraYPos, false, TIER1B, PATH);//bot
-				Render(TerrainImage, x - 1, y, 2, rand() % 2 + 16, DIMW, DIMH, cameraXPos, cameraYPos, false, TIER1B, PATH);//left
-				Render(TerrainImage, x, y - 1, 3, rand() % 2 + 16, DIMW, DIMH, cameraXPos, cameraYPos, false, TIER1B, PATH);//top
+				Render(TerrainImage, x + 1, y, 0, rand() % 2 + 16, DIMW, DIMH, cameraXPos, cameraYPos, false, TIER1B);//right
+				Render(TerrainImage, x, y + 1, 1, rand() % 2 + 16, DIMW, DIMH, cameraXPos, cameraYPos, false, TIER1B);//bot
+				Render(TerrainImage, x - 1, y, 2, rand() % 2 + 16, DIMW, DIMH, cameraXPos, cameraYPos, false, TIER1B);//left
+				Render(TerrainImage, x, y - 1, 3, rand() % 2 + 16, DIMW, DIMH, cameraXPos, cameraYPos, false, TIER1B);//top
 			}
 		}
 	}
@@ -1073,10 +1086,10 @@ void AllegroOverlay(ALLEGRO_BITMAP *TerrainImage, ALLEGRO_BITMAP *bgImage, ALLEG
 }
 
 //passes data from AllegroOverlay to create a new GameObject
-void Render(ALLEGRO_BITMAP *Image, double game_x, double game_y, int image_x, int image_y, int size_x, int size_y, double cameraXPos, double cameraYPos, bool collision, int ID, int TIER)
+void Render(ALLEGRO_BITMAP *Image, double game_x, double game_y, int image_x, int image_y, int size_x, int size_y, double cameraXPos, double cameraYPos, bool collision, int TIER)
 {
 	Terrain *terrain = new Terrain();
-	terrain->Init(Image, (game_x*DIMW) - cameraXPos, (game_y*DIMH) - cameraYPos, DIMW*image_x, DIMH*image_y, size_x, size_y, collision, ID, TIER);
+	terrain->Init(Image, (game_x*DIMW) - cameraXPos, (game_y*DIMH) - cameraYPos, DIMW*image_x, DIMH*image_y, size_x, size_y, collision, TIER);
 	objects.push_back(terrain);
 }
 

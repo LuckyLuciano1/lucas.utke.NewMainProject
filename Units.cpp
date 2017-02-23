@@ -15,12 +15,11 @@ Units::Units() {
  curFrame increases until it hits maxFrame, at which point it resets (decided in Update)
  curAnim and maxFrame are decided by the Action variable, which keeps track of which ACTION state the unit is in. curAnim and maxFrame are decided within StateHandler.
  */
-void Units::Init(double x, double y, double velX, double velY, double dirX, double dirY, int boundX, int boundY, int ID, int TIER, int timer, int health, int TimeUp)
+void Units::Init(double x, double y, double velX, double velY, double dirX, double dirY, int boundX, int boundY, int ID, int TIER, int timer, int health)
 {
 	GameObject::Init(x, y, velX, velY, dirX, dirY, boundX, boundY, ID, TIER);
 	Units::timer = timer;
 	Units::health = health;
-	Units::TimeUp = TimeUp;
 }
 void Units::Update(double CameraX, double CameraY)
 {
@@ -37,7 +36,7 @@ void Units::Collided(GameObject *otherObject)
 {
 	GameObject::Collided(otherObject);
 }
-void Units::Render()
+void Units::Render()	
 {
 	GameObject::Render();
 }
@@ -46,47 +45,15 @@ void Units::Destroy()
 	GameObject::Destroy();
 }
 
-void Units::MoveUp() {
-	if (Action == MOVINGRIGHT || Action == IDLERIGHT || Action == DASHRIGHT)
-		Action = MOVINGUPRIGHT;
-	else
-		Action = MOVINGUPLEFT;
-	ActionTimer = 1;
-}
-void Units::MoveDown() {
+void Units::Pursue(GameObject *otherObject) {
+	double oX = otherObject->GetX();
+	double oY = otherObject->GetY();
 
-	if (Action == MOVINGRIGHT || Action == IDLERIGHT || Action == DASHRIGHT)
-		Action = MOVINGDOWNRIGHT;
-	else
-		Action = MOVINGDOWNLEFT;
-	ActionTimer = 1;
-}
-void Units::MoveLeft() {
-	Action = MOVINGLEFT;
-	ActionTimer = 1;
-}
-void Units::MoveRight() {
-	Action = MOVINGRIGHT;
-	ActionTimer = 1;
-}
-void Units::ResetAnimation(int position)
-{
-	cout << "RESET" << endl;
-		if (Action == MOVINGLEFT || Action == MOVINGUPLEFT || Action == MOVINGDOWNLEFT)
-			Action = IDLELEFT;
-		if (Action == MOVINGRIGHT || Action == MOVINGUPRIGHT || Action == MOVINGDOWNRIGHT)
-			Action = IDLERIGHT;
-		//dirX = 0;
-		//dirY = 0;
-		ActionTimer = 0;
-}
+	dirX = -sin(atan2(y - oY, x - oX)+90);// the plus 90 adjusts the angle. without it, the unit will orbit the target.
+	dirY = cos(atan2(y - oY, x - oX)+90);
 
-void Units::Dash(double Angle) {
-	dirX = sin((Angle + 90) / 180 * PI);
-	dirY = cos((Angle + 90) / 180 * PI);
-	if (Angle < 180)
-		Action = DASHLEFT;
+	if (dirX < 0)
+		Animation = MOVINGLEFT;
 	else
-		Action = DASHRIGHT;
-	ActionTimer = 10;
+		Animation = MOVINGRIGHT;
 }

@@ -116,11 +116,11 @@ bool GameObject::CheckCollisions(GameObject *otherObject)
 void GameObject::Collided(GameObject *otherObject)
 {
 	collision = true;
-	if (ID == PROJECTILE && (otherObject)->GetID() == OBSTACLE) {
+	if (ID == BULLET && (otherObject)->GetID() == TERRAIN) {
 		dirX = 0;
 		dirY = 0;
 	}
-	if (ID == PLAYER && (otherObject)->GetID() == OBSTACLE) {
+	if (ID == PLAYER && (otherObject)->GetID() == TERRAIN) {
 		double oX = otherObject->GetX();
 		double oY = otherObject->GetY();
 

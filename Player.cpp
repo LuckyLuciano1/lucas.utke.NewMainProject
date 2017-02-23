@@ -1,17 +1,20 @@
 #include "Player.h"
+#define PI 3.14159265
+#define DEGREES(x) int((x)/360.0*0xFFFFFF)
+#define RADIANS(x) int((x)/2/M_PI*0xFFFFFF)
 
 Player::Player() {}
 
 void Player::Destroy()
 {
-	Units::Destroy();
+	GameObject::Destroy();
 }
 
 void Player::Init(ALLEGRO_BITMAP *image, double copy_x, double copy_y, int copy_dir_x, int copy_dir_y, int copy_vel_x, int copy_vel_y)
 {
 	frameWidth = 39;
 	frameHeight = 96;
-	Units::Init(copy_x, copy_y, copy_vel_x, copy_vel_y, copy_dir_x, copy_dir_y, frameWidth, frameHeight, PLAYER, TIER1C, 5, 0, 0);
+	GameObject::Init(copy_x, copy_y, copy_vel_x, copy_vel_y, copy_dir_x, copy_dir_y, frameWidth, frameHeight, PLAYER, TIER1C);
 	SetID(PLAYER);
 	SetAlive(true);
 	SetCollidable(true);
@@ -20,8 +23,8 @@ void Player::Init(ALLEGRO_BITMAP *image, double copy_x, double copy_y, int copy_
 	health = 5;
 	timer = 0;
 
-	maxFrame = 14;
-	curFrame = 1;//horizontal
+	maxFrame = 4;
+	curFrame = 1;
 
 	if (image != NULL)
 		Player::image = image;
@@ -29,19 +32,19 @@ void Player::Init(ALLEGRO_BITMAP *image, double copy_x, double copy_y, int copy_
 
 void Player::Update(double cameraX, double cameraY)
 {
-	Units::Update(cameraX, cameraY);
-	ActionTimer--;
-	cout << ActionTimer << endl;
-	if (ActionTimer < 0) {
-		ResetAnimation(1);
-		StateHandler();
+	GameObject::Update(cameraX, cameraY);
+	timer++;
+	if (timer >= 30) {
+		timer = 0;
+		curFrame++;
+		if (curFrame >= maxFrame)//looping for animation
+			curFrame = 0;
 	}
-	StateHandler();
 }
 
 void Player::Render()
 {
-	Units::Render();
+	GameObject::Render();
 	int fx = curFrame*frameWidth;
 	int fy = curAnim*frameHeight;
 
@@ -50,109 +53,84 @@ void Player::Render()
 }
 
 void Player::MoveUp() {
-	Units::MoveUp();
-	Player::StateHandler();
+	if (Action == MOVINGRIGHT || Action == IDLERIGHT || Action == DASHRIGHT)
+		Action = MOVINGRIGHT;
+	else
+		Action = MOVINGLEFT;
+	dirY = -1;
+	Player::AnimationHandler();
 }
 void Player::MoveDown() {
-	Units::MoveDown();
-	Player::StateHandler();
+	if (Action == MOVINGRIGHT || Action == IDLERIGHT || Action == DASHRIGHT)
+		Action = MOVINGRIGHT;
+	else
+		Action = MOVINGLEFT;
+	dirY = 1;
+	Player::AnimationHandler();
 }
 void Player::MoveLeft() {
-	Units::MoveLeft();
-	Player::StateHandler();
+	Action = MOVINGLEFT;
+	dirX = -1;
+	Player::AnimationHandler();
 }
 void Player::MoveRight() {
-	Units::MoveRight();
-	Player::StateHandler();
+	Action = MOVINGRIGHT;
+	dirX = 1;
+	Player::AnimationHandler();
 }
+
 void Player::ResetAnimation(int position)
 {
-	Units::ResetAnimation(position);
-	Player::StateHandler();
+	if (position == 1) {
+		if (Action == MOVINGLEFT)
+			Action = IDLELEFT;
+		else if (Action == MOVINGRIGHT)
+			Action = IDLERIGHT;
+		dirY = 0;
+		Player::AnimationHandler();
+	}
+	else{
+		dirX = 0;
+		Player::AnimationHandler();
+	}
+
+	
 }
 
 void Player::Dash(double MouseAngle) {
-	Units::Dash(MouseAngle);
-	Player::StateHandler();
+	dirX = sin((MouseAngle + 90) / 180 * PI);
+	dirY = cos((MouseAngle + 90) / 180 * PI);
 }
 
 //sets up the various variables that come alongside the Action states. called whenever Action is changed
-void Player::StateHandler()
+void Player::AnimationHandler()
 {
 	//dimensions and other variables will default to:
-	frameWidth = 39;
-	frameHeight = 96;
-	boundX = 39;
-	boundY = 96;
-	//ActionTimer = 1;
-	velX = PLAYERVELX;
-	velY = PLAYERVELY;
-	dirX = 0;
-	dirY = 0;
+	//frameWidth = 39;
+	//frameHeight = 96;
+	//boundX = 39;
+	//boundY = 96;
+
 	if (Action == IDLELEFT) {
-		dirX = 0;
-		dirY = 0;
 		curAnim = 0;
 		maxFrame = 2;
 	}
 	else if (Action == IDLERIGHT) {
-		dirX = 0;
-		dirY = 0;
 		curAnim = 1;
 		maxFrame = 4;
 	}
 	else if (Action == MOVINGLEFT) {
-		dirX = -1;
 		curAnim = 2;
 		maxFrame = 2;
 	}
 	else if (Action == MOVINGRIGHT) {
-		dirX = 1;
-		curAnim = 3;
-		maxFrame = 2;
-	}
-	else if (Action == MOVINGUPLEFT) {
-		dirX = -1;
-		dirY = -1;
-		curAnim = 2;
-		maxFrame = 2;
-	}
-	else if (Action == MOVINGUPRIGHT) {
-		dirX = 1;
-		dirY = -1;
-		curAnim = 3;
-		maxFrame = 2;
-	}
-	else if (Action == MOVINGDOWNLEFT) {
-		dirX = -1;
-		dirY = 1;
-		curAnim = 2;
-		maxFrame = 2;
-	}
-	else if (Action == MOVINGDOWNRIGHT) {
-		dirX = 1;
-		dirY = 1;
 		curAnim = 3;
 		maxFrame = 2;
 	}
 	else if (Action == DASHLEFT) {
-		curAnim = 4;
-		maxFrame = 1;
-		frameWidth = 69;
-		frameHeight = 72;
-		//boundX = 69;
-		//boundY = 72;
-		velX = 20;
-		velY = 20;
+		cout << "DASHLEFT is not finished. get off your ass and finish it, future self." << endl;
 	}
 	else if (Action == DASHRIGHT) {
-		curAnim = 5;
-		maxFrame = 1;
-		frameWidth = 69;
-		frameHeight = 72;
-		//boundX = 69;
-		//boundY = 72;
-		velX = 20;
-		velY = 20;
+		cout << "DASHRIGHT is not finished. get off your ass and finish it, future self." << endl;
 	}
 }

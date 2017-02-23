@@ -13,7 +13,7 @@ const int FPS = 60;
 const int PLAYERVELX = 5, PLAYERVELY = 5;
 
 //enum ID { PLAYER, FOOTSOLDIER, TERRAIN_EMPTY, TERRAIN_FULL, WEAPON, BULLET, MISC, WALKABLE, CLOUD };
-enum ID {
+/*enum ID {
 	PLAYER, 
 	ENEMY, 
 	DETAIL, //anything that appears, but has no effect on the other objects
@@ -21,6 +21,22 @@ enum ID {
 	PATH, 
 	OBSTACLE,
 	MISC
+};*/
+enum ID {//new prototype ID system, that might work better when handling unique requirements for basic functions (Update() might require a specific position for GUN, rather than just the camera position)
+	BACKGROUND, 
+	BIRD, 
+	BULLET, 
+	CLOUDBASE, 
+	CULTIST, 
+	GRASS, 
+	GUN, 
+	INVISIBLETILE, 
+	MIST, 
+	MISTSPAWNER, 
+	PLAYER, 
+	SCROLLER, 
+	SHADOWEDBLOCK, 
+	TERRAIN, 
 };
 enum TIER {	TIER0A, TIER0B, TIER0C,//background + base, clouds
 			TIER1A, //tile

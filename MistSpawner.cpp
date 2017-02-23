@@ -10,12 +10,10 @@ void MistSpawner::Destroy()
 
 void MistSpawner::Init(ALLEGRO_BITMAP *image, double copy_x, double copy_y, double copy_image_x, double copy_image_y, double image_size_x, double image_size_y, bool collision)
 {
-	GameObject::Init(copy_x, copy_y, 6, 6, 0, 0, image_size_x, image_size_y, MISC, TIER1C);
+	GameObject::Init(copy_x, copy_y, 6, 6, 0, 0, image_size_x, image_size_y, MISTSPAWNER, TIER1C);
 
 	SetCollidable(false);
 	SetOrigCollidable(false);
-
-	SetID(MISC);
 
 	SetAlive(true);
 
@@ -36,9 +34,9 @@ void MistSpawner::Update(double cameraX, double cameraY)
 		frameCounter = 0;
 		//spawn mist here?
 	}
-	Mist *mist = new Mist();
-	mist->Init(ColorImage, x, y, SMOKE);
-	objects.push_back(mist);
+	//Mist *mist = new Mist();
+	//mist->Init(ColorImage, x, y, SMOKE);
+	//objects.push_back(mist);
 }
 
 //does not render, only meant to spawn mist
