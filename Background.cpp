@@ -16,9 +16,9 @@ void Background::Destroy()
 	GameObject::Destroy();
 }
 
-void Background::Update(double cameraX, double cameraY)
+void Background::Update(double cameraX, double cameraY, vector<GameObject*> &objects)
 {
-	GameObject::Update(cameraX, cameraY);
+	GameObject::Update(cameraX, cameraY, objects);
 }
 
 void Background::Render()

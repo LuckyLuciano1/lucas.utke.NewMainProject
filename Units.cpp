@@ -21,7 +21,7 @@ void Units::Init(double x, double y, double velX, double velY, double dirX, doub
 	Units::timer = timer;
 	Units::health = health;
 }
-void Units::Update(double CameraX, double CameraY)
+void Units::Update(double CameraX, double CameraY, vector<GameObject*> &objects)
 {
 	timer++;
 	if (timer >= 30) {
@@ -30,7 +30,7 @@ void Units::Update(double CameraX, double CameraY)
 		if (curFrame >= maxFrame)
 			curFrame = 0;
 	}
-	GameObject::Update(CameraX, CameraY);
+	GameObject::Update(CameraX, CameraY, objects);
 }
 void Units::Collided(GameObject *otherObject)
 {
@@ -49,8 +49,8 @@ void Units::Pursue(GameObject *otherObject) {
 	double oX = otherObject->GetX();
 	double oY = otherObject->GetY();
 
-	dirX = -sin(atan2(y - oY, x - oX)+90);// the plus 90 adjusts the angle. without it, the unit will orbit the target.
-	dirY = cos(atan2(y - oY, x - oX)+90);
+	dirX = -sin(atan2(y - oY, x - oX));// +90);// the plus 90 adjusts the angle. without it, the unit will orbit the target.
+	dirY = cos(atan2(y - oY, x - oX));// +90);
 
 	if (dirX < 0)
 		Animation = MOVINGLEFT;

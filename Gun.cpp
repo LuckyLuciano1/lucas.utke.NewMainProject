@@ -27,9 +27,9 @@ void Gun::Init(ALLEGRO_BITMAP *image, double copy_x, double copy_y, int image_si
 		Gun::image = image;
 }
 
-void Gun::Update(double cameraX, double cameraY)
+void Gun::Update(double cameraX, double cameraY, vector<GameObject*> &objects)
 {
-	GameObject::Update(cameraX, cameraY);
+	GameObject::Update(cameraX, cameraY, objects);
 	TimeUp++;
 	if (TimeUp >= 2)
 		SetAlive(false);

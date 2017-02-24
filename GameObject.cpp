@@ -56,7 +56,7 @@ void GameObject::Init(double x, double y, double velX, double velY, double dirX,
 
 }
 
-void GameObject::Update(double cameraX, double cameraY)
+void GameObject::Update(double cameraX, double cameraY, vector<GameObject*> &objects)
 {
 	x += velX * dirX;
 	y += velY * dirY;
@@ -116,9 +116,9 @@ bool GameObject::CheckCollisions(GameObject *otherObject)
 void GameObject::Collided(GameObject *otherObject)
 {
 	collision = true;
-	if (ID == BULLET && (otherObject)->GetID() == TERRAIN) {
-		dirX = 0;
-		dirY = 0;
+	if (ID == CULTIST && (otherObject)->GetID() == BULLET) {
+		SetAlive(false);
+		(otherObject)->SetAlive(false);
 	}
 	if (ID == PLAYER && (otherObject)->GetID() == TERRAIN) {
 		double oX = otherObject->GetX();

@@ -29,9 +29,9 @@ void Terrain::Init(ALLEGRO_BITMAP *image, double copy_x, double copy_y, double c
 		Terrain::image = image;
 }
 
-void Terrain::Update(double cameraX, double cameraY)
+void Terrain::Update(double cameraX, double cameraY, vector<GameObject*> &objects)
 {
-	GameObject::Update(cameraX, cameraY);
+	GameObject::Update(cameraX, cameraY, objects);
 }
 
 //does not use animation rows, sprites, etc. unnecessary for basic box sprite.

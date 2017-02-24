@@ -25,9 +25,9 @@ void InvisibleTile::Init(ALLEGRO_BITMAP *image, double copy_x, double copy_y, do
 		InvisibleTile::image = image;
 }
 
-void InvisibleTile::Update(double cameraX, double cameraY)
+void InvisibleTile::Update(double cameraX, double cameraY, vector<GameObject*> &objects)
 {
-	GameObject::Update(cameraX, cameraY);
+	GameObject::Update(cameraX, cameraY, objects);
 }
 
 void InvisibleTile::Render()

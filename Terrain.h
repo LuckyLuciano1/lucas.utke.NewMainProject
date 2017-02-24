@@ -1,5 +1,6 @@
 #pragma once
 #include "GameObject.h"
+#include <vector>
 #include <iostream>
 using namespace std;
 
@@ -15,7 +16,7 @@ public:
 	void Destroy();
 
 	void Init(ALLEGRO_BITMAP *image, double copy_x, double copy_y, double image_x, double image_y, double image_size_x, double image_size_y, bool collision, int TIER);
-	void Update(double cameraX, double cameraY);
+	void Update(double cameraX, double cameraY, vector<GameObject*> &objects);
 	void Render();
 
 };

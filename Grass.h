@@ -1,6 +1,7 @@
 #pragma once
 #include "GameObject.h"
 #include <iostream>
+#include <vector>
 using namespace std;
 
 class Grass : public GameObject//inheritance
@@ -16,7 +17,7 @@ public:
 	void Destroy();
 
 	void Init(ALLEGRO_BITMAP *image, double copy_x, double copy_y, double image_size_x, double image_size_y);
-	void Update(double CameraX, double CameraY);
+	void Update(double CameraX, double CameraY, vector<GameObject*> &objects);
 	void Render();
 
 };

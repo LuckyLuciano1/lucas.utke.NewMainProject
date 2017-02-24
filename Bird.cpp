@@ -28,9 +28,9 @@ void Bird::Init(ALLEGRO_BITMAP *image, double copy_x, double copy_y, int image_s
 		Bird::image = image;
 }
 
-void Bird::Update(double cameraX, double cameraY)
+void Bird::Update(double cameraX, double cameraY, vector<GameObject*> &objects)
 {
-	Units::Update(cameraX, cameraY);
+	Units::Update(cameraX, cameraY, objects);
 
 	timer++;
 	if (timer >= 60) {

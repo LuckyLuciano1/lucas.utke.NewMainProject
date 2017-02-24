@@ -13,8 +13,8 @@ void Cultist::Init(ALLEGRO_BITMAP *image, double copy_x, double copy_y)
 	frameHeight = 96;
 	Units::Init(copy_x, copy_y, 5, 5, 0, 0, frameWidth, frameHeight, CULTIST, TIER1C, 0, 5);
 	SetAlive(true);
-	SetCollidable(false);
-	SetOrigCollidable(false);
+	SetCollidable(true);
+	SetOrigCollidable(true);
 
 	health = 5;
 	timer = 0;
@@ -29,9 +29,9 @@ void Cultist::Init(ALLEGRO_BITMAP *image, double copy_x, double copy_y)
 		Cultist::image = image;
 }
 
-void Cultist::Update(double cameraX, double cameraY)
+void Cultist::Update(double cameraX, double cameraY, vector<GameObject*> &objects)
 {
-	Units::Update(cameraX, cameraY);
+	Units::Update(cameraX, cameraY, objects);
 	AnimationHandler();//temp
 }
 
@@ -56,7 +56,7 @@ void Cultist::AnimationHandler()
 
 	if (Animation == IDLELEFT) {
 		curAnim = 0;
-		maxFrame = 2;
+		maxFrame = 4;
 	}
 	else if (Animation == IDLERIGHT) {
 		curAnim = 1;
@@ -64,11 +64,11 @@ void Cultist::AnimationHandler()
 	}
 	else if (Animation == MOVINGLEFT) {
 		curAnim = 2;
-		maxFrame = 2;
+		maxFrame = 4;
 	}
 	else if (Animation == MOVINGRIGHT) {
 		curAnim = 3;
-		maxFrame = 2;
+		maxFrame = 4;
 	}
 	else if (Animation == DASHLEFT) {
 		cout << "DASHLEFT is not finished. get off your ass and finish it, future self." << endl;

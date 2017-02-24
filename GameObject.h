@@ -4,6 +4,8 @@
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_primitives.h>
 #include "Globals.h"
+#include <vector>
+using namespace std;
 
 class GameObject
 {
@@ -47,7 +49,7 @@ public:
 	double BaseY;
 
 	void Init(double x, double y, double velX, double velY, double dirX, double dirY, int boundX, int boundY, int ID, int TIER);
-	void virtual Update(double cameraX, double cameraY);
+	void virtual Update(double cameraX, double cameraY, vector<GameObject*> &objects);
 	void virtual Render();
 
 	double GetX() { return x; }

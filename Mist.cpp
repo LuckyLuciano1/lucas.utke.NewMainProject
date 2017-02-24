@@ -41,11 +41,11 @@ void Mist::Init(ALLEGRO_BITMAP *image, double copy_x, double copy_y, int copy_Mi
 		Mist::image = image;
 }
 
-void Mist::Update(double cameraX, double cameraY)
+void Mist::Update(double cameraX, double cameraY, vector<GameObject*> &objects)
 {
-	GameObject::Update(cameraX, cameraY);
-	frameWidth-=.5;
-	frameHeight-=.5;
+	GameObject::Update(cameraX, cameraY, objects);
+	frameWidth--;
+	frameHeight--;
 	if (MistID == FIRE) {
 		if ((frameWidth > 15) || (frameHeight > 15)) {
 			image_y = 0;

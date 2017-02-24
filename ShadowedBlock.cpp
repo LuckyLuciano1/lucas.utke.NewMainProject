@@ -24,9 +24,9 @@ void ShadowedBlock::Init(ALLEGRO_BITMAP *image, double copy_x, double copy_y, do
 		ShadowedBlock::image = image;
 }
 
-void ShadowedBlock::Update(double cameraX, double cameraY)
+void ShadowedBlock::Update(double cameraX, double cameraY, vector<GameObject*> &objects)
 {
-	GameObject::Update(cameraX, cameraY);
+	GameObject::Update(cameraX, cameraY, objects);
 }
 
 //does not use animation rows, sprites, etc. unnecessary for basic box sprite.

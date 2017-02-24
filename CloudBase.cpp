@@ -36,9 +36,9 @@ void CloudBase::Init(ALLEGRO_BITMAP *image, double copy_x, double copy_y, double
 		CloudBase::image = image;
 }
 
-void CloudBase::Update(double cameraX, double cameraY)
+void CloudBase::Update(double cameraX, double cameraY, vector<GameObject*> &objects)
 {
-	GameObject::Update(cameraX, cameraY);
+	GameObject::Update(cameraX, cameraY, objects);
 
 	if (CloudState == SHRINKING && (frameHeight <= DIMH / 2 || frameWidth <= DIMW / 2))//if cloud gets to small, make it regain size
 		CloudState = GROWING;

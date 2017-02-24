@@ -39,8 +39,8 @@
 
 using namespace std;
 
-bool keys[] = { false, false, false, false, false, false, false, false, false, false };
-enum KEYS { UP, DOWN, LEFT, RIGHT, MOUSE_BUTTON, NUM_1, NUM_2, NUM_3, ENTER, SHIFT };
+bool keys[] = { false, false, false, false, false, false, false, false, false, false, false };
+enum KEYS { UP, DOWN, LEFT, RIGHT, MOUSE_BUTTON, NUM_1, NUM_2, NUM_3, NUM_4, ENTER, SHIFT };
 
 //Terrain creation
 void NewMap(ALLEGRO_BITMAP *TerrainImage, ALLEGRO_BITMAP *bgImage, ALLEGRO_BITMAP *CloudImage, ALLEGRO_BITMAP *GrassImage, ALLEGRO_BITMAP *ColorImage, int Map[MAPH][MAPW], bool CloudMap[MAPH][MAPW], double cameraXPos, double cameraYPos);
@@ -53,6 +53,8 @@ void CreateIsland(int Island[ISLANDH][ISLANDW]);
 void MapDetailing(int Map[MAPH][MAPW], int MapDetail[MAPH][MAPW]);
 void ChangeState(ALLEGRO_BITMAP *TerrainImage, ALLEGRO_BITMAP *bgImage, ALLEGRO_BITMAP *CloudImage, ALLEGRO_BITMAP *GrassImage, ALLEGRO_BITMAP *ColorImage, ALLEGRO_BITMAP *PlayerImage, Player *player, bool CloudMap[MAPH][MAPW], int Map[MAPH][MAPW], int &state, int newState, double &PlayerPosX, double &PlayerPosY, double &cameraXPos, double &cameraYPos);
 
+bool compare(GameObject *L1, GameObject *L2);
+
 vector<GameObject *> objects;//used to store objects
 vector<GameObject *>::iterator iter;
 vector<GameObject *>::iterator iter2;
@@ -60,8 +62,6 @@ vector<GameObject *>::iterator iter2;
 vector<Units *> units;//used to store only units (for specific collision and management of AI. units also stored within objects list).
 vector<Units *>::iterator uiter;
 vector<Units *>::iterator uiter2;
-
-bool compare(GameObject *L1, GameObject *L2);
 
 Background *TitleScreen;
 ALLEGRO_SAMPLE_INSTANCE *songInstance;
@@ -274,6 +274,9 @@ int main(int argc, char **argv) {
 			case ALLEGRO_KEY_3:
 				keys[NUM_3] = true;
 				break;
+			case ALLEGRO_KEY_4:
+				keys[NUM_4] = true;
+				break;
 			case ALLEGRO_KEY_ENTER:
 				keys[ENTER] = true;
 				if (state == TITLE) {
@@ -320,6 +323,9 @@ int main(int argc, char **argv) {
 				break;
 			case ALLEGRO_KEY_3:
 				keys[NUM_3] = false;
+				break;
+			case ALLEGRO_KEY_4:
+				keys[NUM_4] = false;
 				break;
 			case ALLEGRO_KEY_ENTER:
 				keys[ENTER] = false;
@@ -433,9 +439,6 @@ int main(int argc, char **argv) {
 					cultist->Init(CultistImage, mousex, mousey);
 					objects.push_back(cultist);
 					units.push_back(cultist);
-
-					//player->Dash(MouseAngle);
-
 					//Mist *mist = new Mist();
 					//mist->Init(ColorImage, mousex, mousey, SMOKE);
 					//objects.push_back(mist);
@@ -443,13 +446,17 @@ int main(int argc, char **argv) {
 				}
 				if (keys[NUM_3])//temp
 				{
-					Mist *mist = new Mist();
-					mist->Init(ColorImage, mousex, mousey, FIRE);
-					objects.push_back(mist);
-					/*InvisibleTile *invisibletile = new InvisibleTile();
-					invisibletile->Init(TerrainImage, (mousex) - cameraXPos, (mousey) - cameraYPos, 7 * DIMW, 0, DIMW, DIMH, TIER1C);
-					objects.push_back(invisibletile);*/
-					//keys[NUM_3] = false;
+					MistSpawner *mistspawner = new MistSpawner();
+					mistspawner->Init(ColorImage, mousex, mousey, FIRE);
+					objects.push_back(mistspawner);
+					keys[NUM_3] = false;
+				}
+				if (keys[NUM_4])//temp
+				{
+					MistSpawner *mistspawner = new MistSpawner();
+					mistspawner->Init(ColorImage, mousex, mousey, SMOKE);
+					objects.push_back(mistspawner);
+					keys[NUM_4] = false;
 				}
 
 				//telling all Units to Pursue() player (temp)
@@ -494,7 +501,7 @@ int main(int argc, char **argv) {
 				//update
 				for (iter = objects.begin(); iter != objects.end(); ++iter)
 				{
-					(*iter)->Update(cameraXDir, cameraYDir);
+						(*iter)->Update(cameraXDir, cameraYDir, objects);
 				}
 
 			}

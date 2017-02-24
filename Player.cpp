@@ -30,9 +30,9 @@ void Player::Init(ALLEGRO_BITMAP *image, double copy_x, double copy_y, int copy_
 		Player::image = image;
 }
 
-void Player::Update(double cameraX, double cameraY)
+void Player::Update(double cameraX, double cameraY, vector<GameObject*> &objects)
 {
-	GameObject::Update(cameraX, cameraY);
+	GameObject::Update(cameraX, cameraY, objects);
 	timer++;
 	if (timer >= 30) {
 		timer = 0;
@@ -113,7 +113,7 @@ void Player::AnimationHandler()
 
 	if (Action == IDLELEFT) {
 		curAnim = 0;
-		maxFrame = 2;
+		maxFrame = 4;
 	}
 	else if (Action == IDLERIGHT) {
 		curAnim = 1;
@@ -121,11 +121,11 @@ void Player::AnimationHandler()
 	}
 	else if (Action == MOVINGLEFT) {
 		curAnim = 2;
-		maxFrame = 2;
+		maxFrame = 4;
 	}
 	else if (Action == MOVINGRIGHT) {
 		curAnim = 3;
-		maxFrame = 2;
+		maxFrame = 4;
 	}
 	else if (Action == DASHLEFT) {
 		cout << "DASHLEFT is not finished. get off your ass and finish it, future self." << endl;

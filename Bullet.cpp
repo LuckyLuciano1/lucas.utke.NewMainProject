@@ -22,9 +22,9 @@ void Bullet::Init(ALLEGRO_BITMAP *image, double copy_x, double copy_y, int image
 		Bullet::image = image;
 }
 
-void Bullet::Update(double cameraX, double cameraY)
+void Bullet::Update(double cameraX, double cameraY, vector<GameObject*> &objects)
 {
-	GameObject::Update(cameraX, cameraY);
+	GameObject::Update(cameraX, cameraY, objects);
 
 	Angle += .25;
 	if (Angle > 360)

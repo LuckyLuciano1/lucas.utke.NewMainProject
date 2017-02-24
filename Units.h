@@ -1,5 +1,6 @@
 #pragma once
 #include "GameObject.h"
+#include <vector>
 #include <iostream>
 using namespace std;
 
@@ -21,7 +22,7 @@ public:
 
 	Units();
 	void Init(double x, double y, double velX, double velY, double dirX, double dirY, int boundX, int boundY, int ID, int TIER, int timer, int health);
-	void Update(double CameraX, double CameraY);
+	void Update(double CameraX, double CameraY, vector<GameObject*> &objects);
 	void Render();
 	void Destroy();
 

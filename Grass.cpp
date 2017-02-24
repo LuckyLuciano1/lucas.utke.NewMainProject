@@ -29,9 +29,9 @@ void Grass::Init(ALLEGRO_BITMAP *image, double copy_x, double copy_y, double ima
 		Grass::image = image;
 }
 
-void Grass::Update(double CameraX, double CameraY)
+void Grass::Update(double CameraX, double CameraY, vector<GameObject*> &objects)
 {
-	GameObject::Update(CameraX, CameraY);
+	GameObject::Update(CameraX, CameraY, objects);
 	timer++;
 	if (timer >= 30) {
 		timer = 0;

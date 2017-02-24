@@ -1,6 +1,7 @@
 #pragma once
-#include "Units.h"
+#include "GameObject.h"
 #include <iostream>
+#include <vector>
 using namespace std;
 
 class Player : public GameObject//inheritance
@@ -19,7 +20,7 @@ public:
 	void Destroy();
 
 	void Init(ALLEGRO_BITMAP *image, double copy_x, double copy_y, int copy_dir_x, int copy_dir_y, int copy_vel_x, int copy_vel_y);
-	void Update(double cameraX, double cameraY);
+	void Update(double cameraX, double cameraY, vector<GameObject*> &objects);
 	void Render();
 
 	int GetHealth() { return health; }

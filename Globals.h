@@ -1,4 +1,5 @@
 #pragma once
+
 const int DIMW = 100, DIMH = 100;//ground tile size
 
 const int SCREENW = 1680, SCREENH = 1050;//console size

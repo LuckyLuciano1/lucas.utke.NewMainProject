@@ -18,12 +18,12 @@ void Scroller::Destroy()
 	GameObject::Destroy();
 }
 
-void Scroller::Update(double cameraX, double cameraY)
+void Scroller::Update(double cameraX, double cameraY, vector<GameObject*> &objects)
 {
 	if (x >= WORLDW)
 		x = 0;
 
-	GameObject::Update(cameraX, cameraY);
+	GameObject::Update(cameraX, cameraY, objects);
 }
 
 void Scroller::Render()
