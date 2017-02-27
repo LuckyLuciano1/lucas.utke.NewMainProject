@@ -39,8 +39,8 @@
 
 using namespace std;
 
-bool keys[] = { false, false, false, false, false, false, false, false, false, false, false };
-enum KEYS { UP, DOWN, LEFT, RIGHT, MOUSE_BUTTON, NUM_1, NUM_2, NUM_3, NUM_4, ENTER, SHIFT };
+bool keys[] = { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false };
+enum KEYS { UP, DOWN, LEFT, RIGHT, MOUSE_BUTTON, NUM_1, NUM_2, NUM_3, NUM_4, NUM_5, NUM_6, NUM_7, NUM_8, NUM_9, ENTER, SHIFT };
 
 //Terrain creation
 void NewMap(ALLEGRO_BITMAP *TerrainImage, ALLEGRO_BITMAP *bgImage, ALLEGRO_BITMAP *CloudImage, ALLEGRO_BITMAP *GrassImage, ALLEGRO_BITMAP *ColorImage, int Map[MAPH][MAPW], bool CloudMap[MAPH][MAPW], double cameraXPos, double cameraYPos);
@@ -62,6 +62,8 @@ vector<GameObject *>::iterator iter2;
 vector<Units *> units;//used to store only units (for specific collision and management of AI. units also stored within objects list).
 vector<Units *>::iterator uiter;
 vector<Units *>::iterator uiter2;
+
+vector<GameObject *> blank;//used as a blank vector to insert into gameobjects that don't need it (but require it for inheritance).
 
 Background *TitleScreen;
 ALLEGRO_SAMPLE_INSTANCE *songInstance;
@@ -172,7 +174,7 @@ int main(int argc, char **argv) {
 	al_convert_mask_to_alpha(CloudImage, al_map_rgb(255, 255, 255));
 
 	ColorImage = al_load_bitmap("ColorImage.png");
-	al_convert_mask_to_alpha(CloudImage, al_map_rgb(255, 255, 255));
+	al_convert_mask_to_alpha(ColorImage, al_map_rgb(255, 255, 255));
 
 	TerrainImage = al_load_bitmap("TerrainImageS2.png");
 	al_convert_mask_to_alpha(TerrainImage, al_map_rgb(255, 255, 255));
@@ -277,6 +279,21 @@ int main(int argc, char **argv) {
 			case ALLEGRO_KEY_4:
 				keys[NUM_4] = true;
 				break;
+			case ALLEGRO_KEY_5:
+				keys[NUM_5] = true;
+				break;
+			case ALLEGRO_KEY_6:
+				keys[NUM_6] = true;
+				break;
+			case ALLEGRO_KEY_7:
+				keys[NUM_7] = true;
+				break;
+			case ALLEGRO_KEY_8:
+				keys[NUM_8] = true;
+				break;
+			case ALLEGRO_KEY_9:
+				keys[NUM_9] = true;
+				break;
 			case ALLEGRO_KEY_ENTER:
 				keys[ENTER] = true;
 				if (state == TITLE) {
@@ -326,6 +343,21 @@ int main(int argc, char **argv) {
 				break;
 			case ALLEGRO_KEY_4:
 				keys[NUM_4] = false;
+				break;
+			case ALLEGRO_KEY_5:
+				keys[NUM_5] = false;
+				break;
+			case ALLEGRO_KEY_6:
+				keys[NUM_6] = false;
+				break;
+			case ALLEGRO_KEY_7:
+				keys[NUM_7] = false;
+				break;
+			case ALLEGRO_KEY_8:
+				keys[NUM_8] = false;
+				break;
+			case ALLEGRO_KEY_9:
+				keys[NUM_9] = false;
 				break;
 			case ALLEGRO_KEY_ENTER:
 				keys[ENTER] = false;
@@ -439,26 +471,45 @@ int main(int argc, char **argv) {
 					cultist->Init(CultistImage, mousex, mousey);
 					objects.push_back(cultist);
 					units.push_back(cultist);
-					//Mist *mist = new Mist();
-					//mist->Init(ColorImage, mousex, mousey, SMOKE);
-					//objects.push_back(mist);
 					keys[NUM_2] = false;
 				}
-				if (keys[NUM_3])//temp
-				{
-					MistSpawner *mistspawner = new MistSpawner();
-					mistspawner->Init(ColorImage, mousex, mousey, FIRE);
-					objects.push_back(mistspawner);
-					keys[NUM_3] = false;
-				}
-				if (keys[NUM_4])//temp
+				if (keys[NUM_3])
 				{
 					MistSpawner *mistspawner = new MistSpawner();
 					mistspawner->Init(ColorImage, mousex, mousey, SMOKE);
 					objects.push_back(mistspawner);
+					keys[NUM_3] = false;
+				}
+				if (keys[NUM_4])
+				{
+					MistSpawner *mistspawner = new MistSpawner();
+					mistspawner->Init(ColorImage, mousex, mousey, WISP);
+					objects.push_back(mistspawner);
 					keys[NUM_4] = false;
 				}
-
+				if (keys[NUM_5])
+				{
+					MistSpawner *mistspawner = new MistSpawner();
+					mistspawner->Init(ColorImage, mousex, mousey, FIRE);
+					objects.push_back(mistspawner);
+					keys[NUM_5] = false;
+				}
+				if (keys[NUM_6]) 
+				{
+					keys[NUM_6] = false;
+				}
+				if (keys[NUM_7])
+				{
+					keys[NUM_7] = false;
+				}
+				if (keys[NUM_8])
+				{
+					keys[NUM_8] = false;
+				}
+				if (keys[NUM_9])
+				{
+					keys[NUM_9] = false;
+				}
 				//telling all Units to Pursue() player (temp)
 				for (uiter = units.begin(); uiter != units.end(); ++uiter)
 				{
@@ -501,7 +552,12 @@ int main(int argc, char **argv) {
 				//update
 				for (iter = objects.begin(); iter != objects.end(); ++iter)
 				{
-						(*iter)->Update(cameraXDir, cameraYDir, objects);
+						if((*iter)->GetID() != MISTSPAWNER &&//list of items that actually require the entire object list.
+							(*iter)->GetID() != MIST &&
+							(*iter)->GetID() != CULTIST)
+							(*iter)->Update(cameraXDir, cameraYDir, blank);
+						else
+							(*iter)->Update(cameraXDir, cameraYDir, objects);
 				}
 
 			}

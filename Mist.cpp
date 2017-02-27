@@ -1,5 +1,4 @@
 #include "Mist.h"
-
 Mist::Mist() {}
 
 void Mist::Destroy()
@@ -34,6 +33,8 @@ void Mist::Init(ALLEGRO_BITMAP *image, double copy_x, double copy_y, int copy_Mi
 		image_y = 0;
 	else if (MistID == SMOKE)
 		image_y = 1500;
+	else if (MistID == WISP)
+		image_y = 2000;
 	else
 		image_y = 0;
 

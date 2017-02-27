@@ -47,7 +47,7 @@ enum TIER {	TIER0A, TIER0B, TIER0C,//background + base, clouds
 };
 
 enum STATE { TITLE, PLAYING, LOST };
-enum MistType { SMOKE, FIRE };//side thingy for minor "Mist" effect
+enum MistType { SMOKE, FIRE, WISP };//side thingy for minor "Mist" effect
 
 
 const int COL_RANGEX = DIMW * 3, COL_NUMX = WORLDW / COL_RANGEX;
