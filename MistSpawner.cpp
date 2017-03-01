@@ -7,9 +7,9 @@ void MistSpawner::Destroy()
 	GameObject::Destroy();
 }
 
-void MistSpawner::Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y, int copy_MistID)
+void MistSpawner::Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y, int ref_MistID)
 {
-	GameObject::Init(ref_x, ref_y, 5, 5, 0, 0, 30, 30, MISTSPAWNER, TIER1C);
+	GameObject::Init(ref_x, ref_y, PLAYERVELX - 1, PLAYERVELY - 1, 0, 0, 30, 30, MISTSPAWNER, TIER1C);
 
 	SetCollidable(false);
 	SetOrigCollidable(false);
@@ -19,8 +19,8 @@ void MistSpawner::Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y, int co
 	frameWidth = 30;
 	frameHeight = 30;
 	frameCounter = 0;
-	MistID = copy_MistID;
-	TimeUp = 200;
+	MistID = ref_MistID;
+	TimeUp = 60;
 	TargetFound = false;
 	if (image != NULL)
 		MistSpawner::image = image;
@@ -46,27 +46,26 @@ void MistSpawner::Update(double cameraX, double cameraY, vector<GameObject*> &ob
 		for (iter = objects.begin(); iter != objects.end(); ++iter)
 		{
 			if ((*iter)->GetID() == PLAYER)
-				otherObject = (*iter);
+				Target = (*iter);
 		}
 		TargetFound = true;
 	}
 	else
-		Orbit(otherObject);
+		Orbit(Target);
 }
 
 //does not render, only meant to spawn mist
 void MistSpawner::Render()
 {
-	//if (MistID == WISP || MistID == FIRE) {
-		al_draw_tinted_bitmap_region(image, al_map_rgba_f(1, 1, 1, 0.9), 0, 2500, frameWidth, frameHeight, x - frameWidth/2, y - frameHeight/2, 0);
-	//}
+	//small box/rune symbol to indicate center of effect
+	al_draw_tinted_bitmap_region(image, al_map_rgba_f(1, 1, 1, 0.9), 0, 2500, frameWidth, frameHeight, x, y, 0);
 }
 
-void MistSpawner::Orbit(GameObject *otherObject) {
-	double oX = otherObject->GetX();
-	double oY = otherObject->GetY();
-	int obX = otherObject->GetBoundX();
-	int obY = otherObject->GetBoundY();
+void MistSpawner::Orbit(GameObject *Target) {
+	double oX = Target->GetX();
+	double oY = Target->GetY();
+	int obX = Target->GetBoundX();
+	int obY = Target->GetBoundY();
 	int hypotenuse = sqrt(((y - (oY + (obY / 2)))*(y - (oY + (obY / 2)))) + ((x - (oX + (obX / 2)))*(x - (oX + (obX / 2)))));//finds the length of the distance between object and target
 
 	if (hypotenuse > 50) {//contracting spiral

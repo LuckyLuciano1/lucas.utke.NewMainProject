@@ -19,7 +19,7 @@ public:
 	Player();
 	void Destroy();
 
-	void Init(ALLEGRO_BITMAP *image, double copy_x, double copy_y, int copy_dir_x, int copy_dir_y, int copy_vel_x, int copy_vel_y);
+	void Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y, int ref_dir_x, int ref_dir_y, int ref_vel_x, int ref_vel_y);
 	void Update(double cameraX, double cameraY, vector<GameObject*> &objects);
 	void Render();
 

@@ -10,11 +10,11 @@ void Player::Destroy()
 	GameObject::Destroy();
 }
 
-void Player::Init(ALLEGRO_BITMAP *image, double copy_x, double copy_y, int copy_dir_x, int copy_dir_y, int copy_vel_x, int copy_vel_y)
+void Player::Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y, int ref_dir_x, int ref_dir_y, int ref_vel_x, int ref_vel_y)
 {
 	frameWidth = 39;
 	frameHeight = 96;
-	GameObject::Init(copy_x, copy_y, copy_vel_x, copy_vel_y, copy_dir_x, copy_dir_y, frameWidth, frameHeight, PLAYER, TIER1C);
+	GameObject::Init(ref_x, ref_y, ref_vel_x, ref_vel_y, ref_dir_x, ref_dir_y, frameWidth, frameHeight, PLAYER, TIER1C);
 	SetID(PLAYER);
 	SetAlive(true);
 	SetCollidable(true);

@@ -16,7 +16,7 @@ public:
 	Grass();
 	void Destroy();
 
-	void Init(ALLEGRO_BITMAP *image, double copy_x, double copy_y, double image_size_x, double image_size_y);
+	void Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y, double image_size_x, double image_size_y);
 	void Update(double CameraX, double CameraY, vector<GameObject*> &objects);
 	void Render();
 

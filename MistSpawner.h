@@ -14,13 +14,13 @@ private:
 	int MistID;
 	bool TargetFound;
 	vector<GameObject *>::iterator iter;
-	GameObject *otherObject;
+	GameObject *Target;
 public:
 	MistSpawner();
 	void Destroy();
 
-	void Init(ALLEGRO_BITMAP *image, double copy_x, double copy_y, int copy_MistID);
+	void Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y, int ref_MistID);
 	void Update(double cameraX, double cameraY, vector<GameObject*> &objects);
 	void Render();
-	void Orbit(GameObject *otherObject);
+	void Orbit(GameObject *Target);
 };

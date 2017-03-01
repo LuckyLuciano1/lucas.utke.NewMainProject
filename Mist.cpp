@@ -6,7 +6,7 @@ void Mist::Destroy()
 	GameObject::Destroy();
 }
 
-void Mist::Init(ALLEGRO_BITMAP *image, double copy_x, double copy_y, int copy_MistID)
+void Mist::Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y, int ref_MistID)
 {
 
 	RandDirX = (rand() % 20);
@@ -20,14 +20,14 @@ void Mist::Init(ALLEGRO_BITMAP *image, double copy_x, double copy_y, int copy_Mi
 	frameWidth = RandSize;
 	frameHeight = RandSize;
 
-	GameObject::Init(copy_x, copy_y, 2, 2, RandDirX / 100, RandDirY / 100, frameWidth, frameHeight, MIST, TIER1C);
+	GameObject::Init(ref_x, ref_y, 2, 2, RandDirX / 100, RandDirY / 100, frameWidth, frameHeight, MIST, TIER1C);
 
 	SetCollidable(false);
 	SetOrigCollidable(false);
 	SetAlive(true);
 
 
-	MistID = copy_MistID;
+	MistID = ref_MistID;
 	image_x = 0;
 	if (MistID == FIRE)
 		image_y = 0;
@@ -67,5 +67,5 @@ void Mist::Update(double cameraX, double cameraY, vector<GameObject*> &objects)
 void Mist::Render()
 {
 	GameObject::Render();
-	al_draw_tinted_bitmap_region(image, al_map_rgba_f(1, 1, 1, 0.3), image_x, image_y, frameWidth, frameHeight, x - frameWidth/2, y-frameHeight/2, 0);
+	al_draw_tinted_bitmap_region(image, al_map_rgba_f(1, 1, 1, 0.3), image_x, image_y, frameWidth, frameHeight, x, y, 0);
 }

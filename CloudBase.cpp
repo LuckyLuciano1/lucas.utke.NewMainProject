@@ -7,9 +7,9 @@ void CloudBase::Destroy()
 	GameObject::Destroy();
 }
 
-void CloudBase::Init(ALLEGRO_BITMAP *image, double copy_x, double copy_y, double copy_image_x, double copy_image_y, bool stable)
+void CloudBase::Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y, double ref_image_x, double ref_image_y, bool stable)
 {
-	GameObject::Init(copy_x, copy_y, 6, 6, 0, 0, DIMW, DIMH, CLOUDBASE, TIER0A);
+	GameObject::Init(ref_x, ref_y, 6, 6, 0, 0, DIMW, DIMH, CLOUDBASE, TIER0A);
 	SetCollidable(false);
 	SetOrigCollidable(false);
 
@@ -17,8 +17,8 @@ void CloudBase::Init(ALLEGRO_BITMAP *image, double copy_x, double copy_y, double
 
 	frameWidth = DIMW;
 	frameHeight = DIMH;
-	image_x = copy_image_x;
-	image_y = copy_image_y;
+	image_x = ref_image_x;
+	image_y = ref_image_y;
 
 	if (stable == true)
 		CloudState = PERMASTABLE;//perma stable is for the clouds underneath, which need to form a solid base.

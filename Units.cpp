@@ -32,9 +32,9 @@ void Units::Update(double CameraX, double CameraY, vector<GameObject*> &objects)
 	}
 	GameObject::Update(CameraX, CameraY, objects);
 }
-void Units::Collided(GameObject *otherObject)
+void Units::Collided(GameObject *Target)
 {
-	GameObject::Collided(otherObject);
+	GameObject::Collided(Target);
 }
 void Units::Render()	
 {
@@ -45,12 +45,26 @@ void Units::Destroy()
 	GameObject::Destroy();
 }
 
-void Units::Pursue(GameObject *otherObject) {
-	double oX = otherObject->GetX();
-	double oY = otherObject->GetY();
+void Units::Orbit(GameObject *Target) {
+	double oX = Target->GetX();
+	double oY = Target->GetY();
+	int obX = Target->GetBoundX();
+	int obY = Target->GetBoundY();
+	//int hypotenuse = sqrt(((y - (oY + (obY / 2)))*(y - (oY + (obY / 2)))) + ((x - (oX + (obX / 2)))*(x - (oX + (obX / 2)))));//finds the length of the distance between object and target
+	int hypotenuse = sqrt((y - oY)*(y - oY) + (x - oX)*(x - oX));//finds the length of the distance between object and target
 
-	dirX = -sin(atan2(y - oY, x - oX));// +90);// the plus 90 adjusts the angle. without it, the unit will orbit the target.
-	dirY = cos(atan2(y - oY, x - oX));// +90);
+	if (hypotenuse > 50) {//contracting spiral
+		dirX = -sin(atan2((y - oY), (x - oX)) + 120);// the plus 90 adjusts the angle. without it, the unit will orbit the target.
+		dirY = cos(atan2((y - oY), (x - oX)) + 120);
+	}
+	else if (hypotenuse < 45) {//expanding spiral
+		dirX = sin(atan2((y - oY), (x - oX)) + 120);// the plus 90 adjusts the angle. without it, the unit will orbit the target.
+		dirY = -cos(atan2((y - oY), (x - oX)) + 120);
+	}
+	else {//maintaining orbit
+		dirX = -sin(atan2((y - oY), (x - oX)) + 0);// the plus 90 adjusts the angle. without it, the unit will orbit the target.
+		dirY = cos(atan2((y - oY), (x - oX)) + 0);
+	}
 
 	if (dirX < 0)
 		Animation = MOVINGLEFT;

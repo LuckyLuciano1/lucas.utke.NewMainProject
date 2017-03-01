@@ -7,15 +7,15 @@ void Bullet::Destroy()
 	GameObject::Destroy();
 }
 
-void Bullet::Init(ALLEGRO_BITMAP *image, double copy_x, double copy_y, int image_size_x, int image_size_y, double copy_MouseAngle, double copy_dirX, double copy_dirY)
+void Bullet::Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y, int image_size_x, int image_size_y, double ref_MouseAngle, double ref_dirX, double ref_dirY)
 {
-	GameObject::Init(copy_x, copy_y, 20, 20, copy_dirX, copy_dirY, image_size_x, image_size_y, BULLET, TIER1C);
+	GameObject::Init(ref_x, ref_y, 20, 20, ref_dirX, ref_dirY, image_size_x, image_size_y, BULLET, TIER1C);
 
 	SetAlive(true);
 	SetCollidable(true);
 	SetOrigCollidable(true);
 
-	Angle = copy_MouseAngle;
+	Angle = ref_MouseAngle;
 
 	srand(time(NULL));
 	if (image != NULL)

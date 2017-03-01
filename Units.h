@@ -29,7 +29,6 @@ public:
 	int GetHealth() { return health; }
 	void TakeDamage() { health--; }
 
-	void Collided(GameObject *otherObject);
-	
-	void Pursue(GameObject *otherObject);
+	void Collided(GameObject *Target);
+	void Orbit(GameObject *Target);
 };
