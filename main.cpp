@@ -424,7 +424,6 @@ int main(int argc, char **argv) {
 				{
 					player->SetX(mousex);
 					player->SetY(mousey);
-					cout << "( " << mousex + cameraXPos << ", " << mousey + cameraYPos << " )" << endl;
 					//keys[MOUSE_BUTTON] = false;
 				}
 				if (keys[SHIFT])
@@ -482,10 +481,10 @@ int main(int argc, char **argv) {
 				}
 				if (keys[NUM_4])
 				{
-					MistSpawner *mistspawner = new MistSpawner();
-					mistspawner->Init(ColorImage, mousex, mousey, WISP);
-					objects.push_back(mistspawner);
-					keys[NUM_4] = false;
+						MistSpawner *mistspawner = new MistSpawner();
+						mistspawner->Init(ColorImage, mousex, mousey, WISP);
+						objects.push_back(mistspawner);
+						keys[NUM_4] = false;
 				}
 				if (keys[NUM_5])
 				{
@@ -509,12 +508,6 @@ int main(int argc, char **argv) {
 				if (keys[NUM_9])
 				{
 					keys[NUM_9] = false;
-				}
-				//telling all Units to Pursue() player (temp)
-				for (uiter = units.begin(); uiter != units.end(); ++uiter)
-				{
-					if((*uiter)->GetID()==CULTIST)
-						(*uiter)->Pursue(player);
 				}
 
 				//collisions
