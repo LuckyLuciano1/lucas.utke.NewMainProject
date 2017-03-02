@@ -7,14 +7,18 @@ using namespace std;
 class Player : public GameObject//inheritance
 {
 private:
-	int health;
-	int timer;
+	int Health;
+	int Timer;
 	enum ACTION {
 		IDLELEFT, IDLERIGHT,
 		MOVINGLEFT, MOVINGRIGHT,
-		DASHLEFT, DASHRIGHT
+		DASHLEFT, DASHRIGHT,
+		CHARGELEFT, CHARGERIGHT,
+		LUNGELEFT, LUNGERIGHT
 	};//list of all the various animations that the player has
-	int Action;//tracks which Action is being performed by Units
+	int Animation;//tracks which animtaion is being performed by the main character
+	int ChargeTime;//tracks amount that character has charged attack
+
 public:
 	Player();
 	void Destroy();
@@ -23,9 +27,9 @@ public:
 	void Update(double cameraX, double cameraY, vector<GameObject*> &objects);
 	void Render();
 
-	int GetHealth() { return health; }
+	int GetHealth() { return Health; }
 
-	void TakeDamage() { health--; }
+	void TakeDamage() { Health--; }
 
 	void AnimationHandler();
 	void MoveUp();
@@ -34,4 +38,8 @@ public:
 	void MoveRight();
 	void ResetAnimation(int position);
 	void Dash(double MouseAngle);
+	void Charge(int mousex);//chrages attack
+	int GetChargeTime() { return ChargeTime; }//returns how much attack is charged
+	void SetChargeTime(int ChargeTime) { Player::ChargeTime = ChargeTime; }
+	void Lunge(double MouseAngle);//attack itself
 };

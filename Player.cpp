@@ -20,8 +20,9 @@ void Player::Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y, int ref_dir
 	SetCollidable(true);
 	SetOrigCollidable(true);
 
-	health = 5;
-	timer = 0;
+	Health = 5;
+	Timer = 0;
+	ChargeTime = 0;
 
 	maxFrame = 4;
 	curFrame = 1;
@@ -33,9 +34,9 @@ void Player::Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y, int ref_dir
 void Player::Update(double cameraX, double cameraY, vector<GameObject*> &objects)
 {
 	GameObject::Update(cameraX, cameraY, objects);
-	timer++;
-	if (timer >= 30) {
-		timer = 0;
+	Timer++;
+	if (Timer >= 30) {
+		Timer = 0;
 		curFrame++;
 		if (curFrame >= maxFrame)//looping for animation
 			curFrame = 0;
@@ -53,28 +54,28 @@ void Player::Render()
 }
 
 void Player::MoveUp() {
-	if (Action == MOVINGRIGHT || Action == IDLERIGHT || Action == DASHRIGHT)
-		Action = MOVINGRIGHT;
+	if (Animation == MOVINGRIGHT || Animation == IDLERIGHT || Animation == DASHRIGHT)
+		Animation = MOVINGRIGHT;
 	else
-		Action = MOVINGLEFT;
+		Animation = MOVINGLEFT;
 	dirY = -1;
 	Player::AnimationHandler();
 }
 void Player::MoveDown() {
-	if (Action == MOVINGRIGHT || Action == IDLERIGHT || Action == DASHRIGHT)
-		Action = MOVINGRIGHT;
+	if (Animation == MOVINGRIGHT || Animation == IDLERIGHT || Animation == DASHRIGHT)
+		Animation = MOVINGRIGHT;
 	else
-		Action = MOVINGLEFT;
+		Animation = MOVINGLEFT;
 	dirY = 1;
 	Player::AnimationHandler();
 }
 void Player::MoveLeft() {
-	Action = MOVINGLEFT;
+	Animation = MOVINGLEFT;
 	dirX = -1;
 	Player::AnimationHandler();
 }
 void Player::MoveRight() {
-	Action = MOVINGRIGHT;
+	Animation = MOVINGRIGHT;
 	dirX = 1;
 	Player::AnimationHandler();
 }
@@ -82,10 +83,10 @@ void Player::MoveRight() {
 void Player::ResetAnimation(int position)
 {
 	if (position == 1) {
-		if (Action == MOVINGLEFT)
-			Action = IDLELEFT;
-		else if (Action == MOVINGRIGHT)
-			Action = IDLERIGHT;
+		if (Animation == MOVINGLEFT)
+			Animation = IDLELEFT;
+		else if (Animation == MOVINGRIGHT)
+			Animation = IDLERIGHT;
 		dirY = 0;
 		Player::AnimationHandler();
 	}
@@ -101,36 +102,84 @@ void Player::Dash(double MouseAngle) {
 	dirX = sin((MouseAngle + 90) / 180 * PI);
 	dirY = cos((MouseAngle + 90) / 180 * PI);
 }
+void Player::Charge(int mousex) {
+	ChargeTime++;
+	cout << ChargeTime << endl;
+	if (x > mousex)
+		Animation = CHARGELEFT;
+	else
+		Animation = CHARGERIGHT;
+	AnimationHandler();
+}
+void Player::Lunge(double MouseAngle) {
+	cout << "LUNGE!" << endl;
+	velX *= sqrt(ChargeTime);
+	velY *= sqrt(ChargeTime);
+	dirX = -sin(MouseAngle);// the plus 90 adjusts the angle. without it, the unit will orbit the target.
+	dirY = cos(MouseAngle);
 
-//sets up the various variables that come alongside the Action states. called whenever Action is changed
+	//ChargeTime--;
+	ChargeTime = 0;
+}
+
+//sets up the various variables that come alongside the Animation states. called whenever Animation is changed
 void Player::AnimationHandler()
 {
 	//dimensions and other variables will default to:
-	//frameWidth = 39;
-	//frameHeight = 96;
-	//boundX = 39;
-	//boundY = 96;
+	frameWidth = 39;
+	frameHeight = 96;
+	boundX = 39;
+	boundY = 96;
+	velX = PLAYERVELX, velY = PLAYERVELY;
 
-	if (Action == IDLELEFT) {
+	if (Animation == IDLELEFT) {
 		curAnim = 0;
 		maxFrame = 4;
 	}
-	else if (Action == IDLERIGHT) {
+	else if (Animation == IDLERIGHT) {
 		curAnim = 1;
 		maxFrame = 4;
 	}
-	else if (Action == MOVINGLEFT) {
+	else if (Animation == MOVINGLEFT) {
 		curAnim = 2;
 		maxFrame = 4;
 	}
-	else if (Action == MOVINGRIGHT) {
+	else if (Animation == MOVINGRIGHT) {
 		curAnim = 3;
 		maxFrame = 4;
 	}
-	else if (Action == DASHLEFT) {
+	else if (Animation == CHARGELEFT) {
+		curAnim = 4;
+		maxFrame = 1;
+	}
+	else if (Animation == CHARGERIGHT) {
+		curAnim = 5;
+		maxFrame = 1;
+	}
+	else if (Animation == LUNGELEFT) {
+		curAnim = 6;
+		maxFrame = 1;
+		frameWidth = 69;
+		frameHeight = 72;
+		boundX = 69;
+		boundY = 72;
+	}
+	else if (Animation == LUNGERIGHT) {
+		curAnim = 7;
+		maxFrame = 1;
+		frameWidth = 69;
+		frameHeight = 72;
+		boundX = 69;
+		boundY = 72;
+	}
+	else if (Animation == DASHLEFT) {
 		cout << "DASHLEFT is not finished. get off your ass and finish it, future self." << endl;
 	}
-	else if (Action == DASHRIGHT) {
+	else if (Animation == DASHRIGHT) {
 		cout << "DASHRIGHT is not finished. get off your ass and finish it, future self." << endl;
 	}
+
+	//sets curFrame based on maxFrame
+	if (curFrame > maxFrame)
+		curFrame = maxFrame-1;
 }

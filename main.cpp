@@ -130,6 +130,7 @@ int main(int argc, char **argv) {
 	//ALLEGRO VARIABLES
 	//==============================================
 	ALLEGRO_DISPLAY *display = NULL;
+	ALLEGRO_DISPLAY_MODE   disp_data;
 	ALLEGRO_EVENT_QUEUE *event_queue = NULL;
 	ALLEGRO_TIMER *timer = NULL;
 	ALLEGRO_FONT *font18;
@@ -139,8 +140,11 @@ int main(int argc, char **argv) {
 	//==============================================
 	if (!al_init())										//initialize Allegro
 		return -1;
+	al_get_display_mode(al_get_num_display_modes() - 1, &disp_data);
 
-	display = al_create_display(SCREENW, SCREENH);		//create our display object
+	//al_set_new_display_flags(ALLEGRO_FULLSCREEN);
+	//display = al_create_display(disp_data.width, disp_data.height);
+	display = al_create_display(SCREENW - 100, SCREENH - 100);		//create our display object
 
 	if (!display)										//test display object
 		return -1;
@@ -221,9 +225,9 @@ int main(int argc, char **argv) {
 
 	//al_clear_to_color(al_map_rgb(0, 0, 0));
 	//al_flip_display();
-
 	al_start_timer(timer);
 	gameTime = al_current_time();
+
 
 	//game loop begin
 	while (!doexit)
@@ -232,7 +236,6 @@ int main(int argc, char **argv) {
 
 		ALLEGRO_EVENT ev;
 		al_wait_for_event(event_queue, &ev);
-
 		frametimer++;
 		if (frametimer == FPS)
 		{
@@ -412,7 +415,44 @@ int main(int argc, char **argv) {
 				cameraYPos -= cameraYDir;
 
 				//keyboard/mouse commands
-				if (keys[MOUSE_BUTTON] && keys[SHIFT])
+				//controls should be:
+				//-WASD for movement
+				//-hold left mouse button to charge attack (cannot move during time). will voice audio when ready
+				//-when left mouse button released and charging is sufficient, dash
+				//-(may not be possible) right mouse button to dash.
+
+				if (keys[MOUSE_BUTTON])
+				{
+					player->Charge(mousex);
+				}
+				if (!keys[MOUSE_BUTTON] && player->GetChargeTime() >= 60) {//if player has charged enough (>=60 frames), and no mouse button (mouse button has been released), Lunge will trigger.
+					player->Lunge(MouseAngle);
+				}
+				else if (!keys[MOUSE_BUTTON] && player->GetChargeTime() < 60)//if player has NOT charged enough (<60 frames), and no mouse button (mouse button has been released), ChargeTime will be reset to 0.
+					player->SetChargeTime(0);
+
+				if (!keys[MOUSE_BUTTON]) {
+					if (keys[UP]) {//player movement
+						player->MoveUp();
+					}
+					else if (keys[DOWN]) {
+						player->MoveDown();
+					}
+					else {
+						player->ResetAnimation(1);
+					}
+
+					if (keys[LEFT]) {
+						player->MoveLeft();
+					}
+					else if (keys[RIGHT]) {
+						player->MoveRight();
+					}
+					else {
+						player->ResetAnimation(0);
+					}
+				}
+				/*if (keys[MOUSE_BUTTON] && keys[SHIFT])
 				{
 					Bullet *bullet = new Bullet();
 					bullet->Init(BulletImage, player->GetX() + 25, player->GetY() + 25, 16, 16, MouseAngle, sin((MouseAngle + 90) / 180 * PI), cos((MouseAngle + 90) / 180 * PI));
@@ -454,7 +494,7 @@ int main(int argc, char **argv) {
 					else {
 						player->ResetAnimation(0);
 					}
-				}
+				}*/
 
 
 				if (keys[NUM_1])//temp
@@ -481,10 +521,10 @@ int main(int argc, char **argv) {
 				}
 				if (keys[NUM_4])
 				{
-						MistSpawner *mistspawner = new MistSpawner();
-						mistspawner->Init(ColorImage, mousex, mousey, WISP);
-						objects.push_back(mistspawner);
-						keys[NUM_4] = false;
+					MistSpawner *mistspawner = new MistSpawner();
+					mistspawner->Init(ColorImage, mousex, mousey, WISP);
+					objects.push_back(mistspawner);
+					keys[NUM_4] = false;
 				}
 				if (keys[NUM_5])
 				{
@@ -493,7 +533,7 @@ int main(int argc, char **argv) {
 					objects.push_back(mistspawner);
 					keys[NUM_5] = false;
 				}
-				if (keys[NUM_6]) 
+				if (keys[NUM_6])
 				{
 					keys[NUM_6] = false;
 				}
@@ -545,12 +585,12 @@ int main(int argc, char **argv) {
 				//update
 				for (iter = objects.begin(); iter != objects.end(); ++iter)
 				{
-						if((*iter)->GetID() != MISTSPAWNER &&//list of items that actually require the entire object list.
-							(*iter)->GetID() != MIST &&
-							(*iter)->GetID() != CULTIST)
-							(*iter)->Update(cameraXDir, cameraYDir, blank);
-						else
-							(*iter)->Update(cameraXDir, cameraYDir, objects);
+					if ((*iter)->GetID() != MISTSPAWNER &&//list of items that actually require the entire object list.
+						(*iter)->GetID() != MIST &&
+						(*iter)->GetID() != CULTIST)
+						(*iter)->Update(cameraXDir, cameraYDir, blank);
+					else
+						(*iter)->Update(cameraXDir, cameraYDir, objects);
 				}
 
 			}

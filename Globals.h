@@ -1,8 +1,9 @@
 #pragma once
 
-const int DIMW = 100, DIMH = 100;//ground tile size
+//int SCREENW = al_get_display_width(display), SCREENH = al_get_display_height(display);//console size
 
-const int SCREENW = 1680, SCREENH = 1050;//console size
+const int DIMW = 100, DIMH = 100;//ground tile size
+const int SCREENW = 1920, SCREENH = 1080;//console size
 const int WORLDW = (40 * DIMW) + SCREENW, WORLDH = (40 * DIMH) + SCREENH;//game map size
 const int MAPW = WORLDW / DIMW, MAPH = WORLDH / DIMH;//game map size, converted for matrix
 
