@@ -36,7 +36,7 @@ protected:
 
 	int maxFrame;//end of animation, requires loop
 	int curFrame;//current frame that animation is on
-	int curAnim;//current animation that is being played (primarily for Units, otherwise permeneantly 0)
+	double curAnim;//current animation that is being played (primarily for Units, otherwise permeneantly 0)
 
 	ALLEGRO_BITMAP *image;
 

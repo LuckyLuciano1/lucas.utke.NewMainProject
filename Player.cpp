@@ -23,6 +23,7 @@ void Player::Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y, int ref_dir
 	Health = 5;
 	Timer = 0;
 	ChargeTime = 0;
+	ChargeTrue = false;
 
 	maxFrame = 4;
 	curFrame = 1;
@@ -59,7 +60,7 @@ void Player::MoveUp() {
 	else
 		Animation = MOVINGLEFT;
 	dirY = -1;
-	Player::AnimationHandler();
+	AnimationHandler();
 }
 void Player::MoveDown() {
 	if (Animation == MOVINGRIGHT || Animation == IDLERIGHT || Animation == DASHRIGHT)
@@ -67,17 +68,17 @@ void Player::MoveDown() {
 	else
 		Animation = MOVINGLEFT;
 	dirY = 1;
-	Player::AnimationHandler();
+	AnimationHandler();
 }
 void Player::MoveLeft() {
 	Animation = MOVINGLEFT;
 	dirX = -1;
-	Player::AnimationHandler();
+	AnimationHandler();
 }
 void Player::MoveRight() {
 	Animation = MOVINGRIGHT;
 	dirX = 1;
-	Player::AnimationHandler();
+	AnimationHandler();
 }
 
 void Player::ResetAnimation(int position)
@@ -88,11 +89,11 @@ void Player::ResetAnimation(int position)
 		else if (Animation == MOVINGRIGHT)
 			Animation = IDLERIGHT;
 		dirY = 0;
-		Player::AnimationHandler();
+		AnimationHandler();
 	}
 	else{
 		dirX = 0;
-		Player::AnimationHandler();
+		//AnimationHandler();
 	}
 
 	
@@ -103,8 +104,12 @@ void Player::Dash(double MouseAngle) {
 	dirY = cos((MouseAngle + 90) / 180 * PI);
 }
 void Player::Charge(int mousex) {
-	ChargeTime++;
 	cout << ChargeTime << endl;
+	if (ChargeTime >= 60)
+		ChargeTrue = true;
+	else
+		ChargeTime++;
+
 	if (x > mousex)
 		Animation = CHARGELEFT;
 	else
@@ -112,14 +117,19 @@ void Player::Charge(int mousex) {
 	AnimationHandler();
 }
 void Player::Lunge(double MouseAngle) {
-	cout << "LUNGE!" << endl;
-	velX *= sqrt(ChargeTime);
-	velY *= sqrt(ChargeTime);
-	dirX = -sin(MouseAngle);// the plus 90 adjusts the angle. without it, the unit will orbit the target.
-	dirY = cos(MouseAngle);
 
-	//ChargeTime--;
-	ChargeTime = 0;
+	velX = PLAYERVELX*(sqrt(ChargeTime));
+	velY = PLAYERVELY*(sqrt(ChargeTime));
+	dirX = sin((MouseAngle + 90) / 180 * PI);
+	dirY = cos((MouseAngle + 90) / 180 * PI);
+
+	if (dirX < 0)
+		Animation = LUNGELEFT;
+	else
+		Animation = LUNGERIGHT;
+
+	AnimationHandler();
+	ChargeTime-=3;
 }
 
 //sets up the various variables that come alongside the Animation states. called whenever Animation is changed
@@ -157,20 +167,24 @@ void Player::AnimationHandler()
 		maxFrame = 1;
 	}
 	else if (Animation == LUNGELEFT) {
-		curAnim = 6;
+		curAnim = (97 * 6) / 69; 
 		maxFrame = 1;
 		frameWidth = 69;
 		frameHeight = 72;
 		boundX = 69;
 		boundY = 72;
+		velX = PLAYERVELX*(sqrt(ChargeTime))/2;
+		velY = PLAYERVELY*(sqrt(ChargeTime))/2;
 	}
 	else if (Animation == LUNGERIGHT) {
-		curAnim = 7;
+		curAnim = (97 * 7) / 69;
 		maxFrame = 1;
 		frameWidth = 69;
 		frameHeight = 72;
 		boundX = 69;
 		boundY = 72;
+		velX = PLAYERVELX*(sqrt(ChargeTime))/2;
+		velY = PLAYERVELY*(sqrt(ChargeTime))/2;
 	}
 	else if (Animation == DASHLEFT) {
 		cout << "DASHLEFT is not finished. get off your ass and finish it, future self." << endl;

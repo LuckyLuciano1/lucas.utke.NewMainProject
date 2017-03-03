@@ -100,6 +100,8 @@ int main(int argc, char **argv) {
 	double MouseAngle = 0;
 	int countercoltest = 0;
 
+	bool ChargeSuccessAudioPlayed = false;
+
 	bool CloudMap[MAPH][MAPW] = {};
 	int Map[MAPH][MAPW] = {};
 
@@ -126,6 +128,9 @@ int main(int argc, char **argv) {
 	ALLEGRO_SAMPLE *song = NULL;
 	ALLEGRO_SAMPLE *shot = NULL;
 
+	ALLEGRO_SAMPLE *ChargeSuccessAudio = NULL;
+	ALLEGRO_SAMPLE *ChargeFailureAudio = NULL;
+
 	//==============================================
 	//ALLEGRO VARIABLES
 	//==============================================
@@ -141,12 +146,16 @@ int main(int argc, char **argv) {
 	if (!al_init())										//initialize Allegro
 		return -1;
 	al_get_display_mode(al_get_num_display_modes() - 1, &disp_data);
+	
+	if (SCREENW == disp_data.width && SCREENH == disp_data.height) {
+		al_set_new_display_flags(ALLEGRO_FULLSCREEN);
+		display = al_create_display(disp_data.width, disp_data.height);
+	}
+	else {
+		display = al_create_display(SCREENW - 100, SCREENH - 100);		//create our display object
+	}
 
-	//al_set_new_display_flags(ALLEGRO_FULLSCREEN);
-	//display = al_create_display(disp_data.width, disp_data.height);
-	display = al_create_display(SCREENW - 100, SCREENH - 100);		//create our display object
-
-	if (!display)										//test display object
+	if (!display)//test display object
 		return -1;
 
 	//==============================================
@@ -204,6 +213,8 @@ int main(int argc, char **argv) {
 
 	shot = al_load_sample("Gunshot.wav");
 	song = al_load_sample("Titan.mp3");
+	ChargeSuccessAudio = al_load_sample("ChargeSuccessAudio.wav");
+	ChargeFailureAudio = al_load_sample("ChargeFailureAudio.wav");
 
 	songInstance = al_create_sample_instance(song);
 	al_set_sample_instance_playmode(songInstance, ALLEGRO_PLAYMODE_LOOP);
@@ -420,82 +431,54 @@ int main(int argc, char **argv) {
 				//-hold left mouse button to charge attack (cannot move during time). will voice audio when ready
 				//-when left mouse button released and charging is sufficient, dash
 				//-(may not be possible) right mouse button to dash.
-
-				if (keys[MOUSE_BUTTON])
-				{
+				
+				if (keys[MOUSE_BUTTON]) {
 					player->Charge(mousex);
-				}
-				if (!keys[MOUSE_BUTTON] && player->GetChargeTime() >= 60) {//if player has charged enough (>=60 frames), and no mouse button (mouse button has been released), Lunge will trigger.
-					player->Lunge(MouseAngle);
-				}
-				else if (!keys[MOUSE_BUTTON] && player->GetChargeTime() < 60)//if player has NOT charged enough (<60 frames), and no mouse button (mouse button has been released), ChargeTime will be reset to 0.
-					player->SetChargeTime(0);
-
-				if (!keys[MOUSE_BUTTON]) {
-					if (keys[UP]) {//player movement
-						player->MoveUp();
+					if (player->GetChargeTime() >= 60 && ChargeSuccessAudioPlayed == false) {
+						al_play_sample(ChargeSuccessAudio, 1, 0, 1, ALLEGRO_PLAYMODE_ONCE, 0);
+						ChargeSuccessAudioPlayed = true;
 					}
-					else if (keys[DOWN]) {
-						player->MoveDown();
-					}
-					else {
-						player->ResetAnimation(1);
-					}
-
-					if (keys[LEFT]) {
-						player->MoveLeft();
-					}
-					else if (keys[RIGHT]) {
-						player->MoveRight();
-					}
-					else {
-						player->ResetAnimation(0);
-					}
-				}
-				/*if (keys[MOUSE_BUTTON] && keys[SHIFT])
-				{
-					Bullet *bullet = new Bullet();
-					bullet->Init(BulletImage, player->GetX() + 25, player->GetY() + 25, 16, 16, MouseAngle, sin((MouseAngle + 90) / 180 * PI), cos((MouseAngle + 90) / 180 * PI));
-					objects.push_back(bullet);
-					//al_play_sample(shot, 1, 0, 1, ALLEGRO_PLAYMODE_ONCE, 0);
-					keys[MOUSE_BUTTON] = false;
-				}
-				else if (keys[MOUSE_BUTTON])
-				{
-					player->SetX(mousex);
-					player->SetY(mousey);
-					//keys[MOUSE_BUTTON] = false;
-				}
-				if (keys[SHIFT])
-				{
-					player->ResetAnimation(1);
-					player->ResetAnimation(0);
-					Gun *gun = new Gun();
-					gun->Init(GunImage, player->GetX(), player->GetY(), 50, 50, MouseAngle);
-					objects.push_back(gun);
 				}
 				else {
-					if (keys[UP]) {//player movement
-						player->MoveUp();
-					}
-					else if (keys[DOWN]) {
-						player->MoveDown();
+					if (player->GetChargeTrue() == true) {//if player has charged enough (>=60 frames), and no mouse button (mouse button has been released), Lunge will trigger.
+						keys[MOUSE_BUTTON] = false;
+
+						if (player->GetChargeTime() > 0)//ChargeTime subtracts throughout lunge. when it hits 0, everything resets and ChargeTrue is set to false
+							player->Lunge(MouseAngle);
+						else {
+							cout << "lungeend" << endl;
+							player->SetChargeTime(0);
+							player->SetChargeTrue(false);
+							player->ResetAnimation(0);
+							player->ResetAnimation(1);
+						}
 					}
 					else {
-						player->ResetAnimation(1);
-					}
+						player->SetChargeTime(0);
+						al_play_sample(ChargeFailureAudio, 1, 0, 1, ALLEGRO_PLAYMODE_ONCE, 0);
+						ChargeSuccessAudioPlayed = false;
+						cout << "movable" << endl;
+						if (keys[UP]) {//player movement
+							player->MoveUp();
+						}
+						else if (keys[DOWN]) {
+							player->MoveDown();
+						}
+						else {
+							player->ResetAnimation(1);
+						}
 
-					if (keys[LEFT]) {
-						player->MoveLeft();
+						if (keys[LEFT]) {
+							player->MoveLeft();
+						}
+						else if (keys[RIGHT]) {
+							player->MoveRight();
+						}
+						else {
+							player->ResetAnimation(0);
+						}
 					}
-					else if (keys[RIGHT]) {
-						player->MoveRight();
-					}
-					else {
-						player->ResetAnimation(0);
-					}
-				}*/
-
+				}
 
 				if (keys[NUM_1])//temp
 				{
