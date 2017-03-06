@@ -18,7 +18,6 @@ private:
 	};//list of all the various animations that the player has
 	int Animation;//tracks which animtaion is being performed by the main character
 	int ChargeTime;//tracks amount that character has charged attack
-	bool ChargeTrue;
 
 public:
 	Player();
@@ -42,7 +41,5 @@ public:
 	void Charge(int mousex);//chrages attack
 	int GetChargeTime() { return ChargeTime; }//returns how much attack is charged
 	void SetChargeTime(int ChargeTime) { Player::ChargeTime = ChargeTime; }
-	bool GetChargeTrue() { return ChargeTrue; }//returns if lunge can be used
-	void SetChargeTrue(bool ChargeTrue) { Player::ChargeTrue = ChargeTrue; }
 	void Lunge(double MouseAngle);//attack itself
 };

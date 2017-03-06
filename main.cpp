@@ -100,7 +100,8 @@ int main(int argc, char **argv) {
 	double MouseAngle = 0;
 	int countercoltest = 0;
 
-	bool ChargeSuccessAudioPlayed = false;
+	bool PlayerLunge = false;//keeps track of when mouse is released, resulting in lunge attack
+	double StoredMouseAngle = 0;//keeps track of MouseAngle a few frames ago (stored when player charges)
 
 	bool CloudMap[MAPH][MAPW] = {};
 	int Map[MAPH][MAPW] = {};
@@ -384,6 +385,7 @@ int main(int argc, char **argv) {
 
 		if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP) {
 			keys[MOUSE_BUTTON] = false;
+			PlayerLunge = true;
 		}
 		//==============================================
 		//GAME UPDATE
@@ -431,59 +433,76 @@ int main(int argc, char **argv) {
 				//-hold left mouse button to charge attack (cannot move during time). will voice audio when ready
 				//-when left mouse button released and charging is sufficient, dash
 				//-(may not be possible) right mouse button to dash.
-				
-				if (keys[MOUSE_BUTTON]) {
-					player->Charge(mousex);
-					if (player->GetChargeTime() >= 60 && ChargeSuccessAudioPlayed == false) {
-						al_play_sample(ChargeSuccessAudio, 1, 0, 1, ALLEGRO_PLAYMODE_ONCE, 0);
-						ChargeSuccessAudioPlayed = true;
-					}
-				}
-				else {
-					if (player->GetChargeTrue() == true) {//if player has charged enough (>=60 frames), and no mouse button (mouse button has been released), Lunge will trigger.
-						keys[MOUSE_BUTTON] = false;
 
-						if (player->GetChargeTime() > 0)//ChargeTime subtracts throughout lunge. when it hits 0, everything resets and ChargeTrue is set to false
-							player->Lunge(MouseAngle);
-						else {
-							cout << "lungeend" << endl;
-							player->SetChargeTime(0);
-							player->SetChargeTrue(false);
-							player->ResetAnimation(0);
-							player->ResetAnimation(1);
-						}
+				//player movement/attacks
+				if (PlayerLunge == true) {//lunge, only true when Mouse Button is released
+					player->Lunge(StoredMouseAngle);
+					if (player->GetChargeTime() <= 0)
+						PlayerLunge = false;
+					//visual effect to represent how long player has charged:
+					if (player->GetChargeTime() <= 20) {
+						Mist *mist = new Mist();
+						mist->Init(ColorImage, player->GetX() + (player->GetBoundX() / 2), player->GetY() + player->GetBoundY(), SMOKE);
+						objects.push_back(mist);
+					}
+					else if (player->GetChargeTime() > 20 && player->GetChargeTime() < 40) {
+						Mist *mist = new Mist();
+						mist->Init(ColorImage, player->GetX() + (player->GetBoundX() / 2), player->GetY() + player->GetBoundY(), FIRE);
+						objects.push_back(mist);
+					}
+					else if (player->GetChargeTime() >= 40) {
+						Mist *mist = new Mist();
+						mist->Init(ColorImage, player->GetX() + (player->GetBoundX() / 2), player->GetY() + player->GetBoundY(), WISP);
+						objects.push_back(mist);
+					}
+				}			
+				else if (keys[MOUSE_BUTTON]) {//charging
+					player->Charge(mousex);
+					StoredMouseAngle = MouseAngle;
+					//visual effect to represent how long player has charged:
+					if (player->GetChargeTime() <= 20) {
+						Mist *mist = new Mist();
+						mist->Init(ColorImage, player->GetX() + (player->GetBoundX() / 2), player->GetY() + player->GetBoundY(), SMOKE);
+						objects.push_back(mist);
+					}
+					else if (player->GetChargeTime() > 20 && player->GetChargeTime() < 40) {
+						Mist *mist = new Mist();
+						mist->Init(ColorImage, player->GetX() + (player->GetBoundX() / 2), player->GetY() + player->GetBoundY(), FIRE);
+						objects.push_back(mist);
+					}
+					else if (player->GetChargeTime() >= 40) {
+						Mist *mist = new Mist();
+						mist->Init(ColorImage, player->GetX() + (player->GetBoundX() / 2), player->GetY() + player->GetBoundY(), WISP);
+						objects.push_back(mist);
+					}
+				}			
+				else {//basic movement
+					player->SetChargeTime(0);
+					if (keys[UP]) {//player movement
+						player->MoveUp();
+					}
+					else if (keys[DOWN]) {
+						player->MoveDown();
 					}
 					else {
-						player->SetChargeTime(0);
-						al_play_sample(ChargeFailureAudio, 1, 0, 1, ALLEGRO_PLAYMODE_ONCE, 0);
-						ChargeSuccessAudioPlayed = false;
-						cout << "movable" << endl;
-						if (keys[UP]) {//player movement
-							player->MoveUp();
-						}
-						else if (keys[DOWN]) {
-							player->MoveDown();
-						}
-						else {
-							player->ResetAnimation(1);
-						}
+						player->ResetAnimation(1);
+					}
 
-						if (keys[LEFT]) {
-							player->MoveLeft();
-						}
-						else if (keys[RIGHT]) {
-							player->MoveRight();
-						}
-						else {
-							player->ResetAnimation(0);
-						}
+					if (keys[LEFT]) {
+						player->MoveLeft();
+					}
+					else if (keys[RIGHT]) {
+						player->MoveRight();
+					}
+					else {
+						player->ResetAnimation(0);
 					}
 				}
 
+				//number keys (temporary, for testing purposes)
 				if (keys[NUM_1])//temp
 				{
 					ChangeState(TerrainImage, bgImage, CloudImage, GrassImage, ColorImage, PlayerImage, player, CloudMap, Map, state, PLAYING, PlayerPosX, PlayerPosY, cameraXPos, cameraYPos);
-
 					keys[NUM_1] = false;
 				}
 

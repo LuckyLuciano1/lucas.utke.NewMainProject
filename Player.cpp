@@ -105,7 +105,7 @@ void Player::Dash(double MouseAngle) {
 }
 void Player::Charge(int mousex) {
 	cout << ChargeTime << endl;
-	if (ChargeTime >= 60)
+	if (ChargeTime >= 40)
 		ChargeTrue = true;
 	else
 		ChargeTime++;
@@ -118,8 +118,8 @@ void Player::Charge(int mousex) {
 }
 void Player::Lunge(double MouseAngle) {
 
-	velX = PLAYERVELX*(sqrt(ChargeTime));
-	velY = PLAYERVELY*(sqrt(ChargeTime));
+	velX = PLAYERVELX+ChargeTime;
+	velY = PLAYERVELY+ChargeTime;
 	dirX = sin((MouseAngle + 90) / 180 * PI);
 	dirY = cos((MouseAngle + 90) / 180 * PI);
 
@@ -129,7 +129,7 @@ void Player::Lunge(double MouseAngle) {
 		Animation = LUNGERIGHT;
 
 	AnimationHandler();
-	ChargeTime-=3;
+	ChargeTime-=2;
 }
 
 //sets up the various variables that come alongside the Animation states. called whenever Animation is changed
