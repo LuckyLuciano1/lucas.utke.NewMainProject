@@ -12,14 +12,22 @@ private:
 	int image_y;
 	enum SpearType { SPINNING, LUNGING, STABLE };
 	int SpearState;
-	int color;
+	double SpearAngle;
+	double SpearTipX;
+	double SpearTipY;
+	ALLEGRO_BITMAP *ColorImage;
 
 public:
 	PlayerSpear();
 	void Destroy();
 
-	void Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y, double image_x, double image_y, bool stable);
+	void Init(ALLEGRO_BITMAP *image, ALLEGRO_BITMAP *ColorImage, double ref_x, double ref_y, double ref_SpearAngle);
 	void Update(double cameraX, double cameraY, vector<GameObject*> &objects);
 	void Render();
+
+	int GetState() { return SpearState; }
+	void SetState(int SpearState) { PlayerSpear::SpearState = SpearState; }
+	int GetAngle() { return SpearAngle; }
+	void SetAngle(int SpearAngle) { PlayerSpear::SpearAngle = SpearAngle; }
 
 };

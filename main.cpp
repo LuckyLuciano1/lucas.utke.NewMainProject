@@ -32,6 +32,7 @@
 #include "CloudBase.h"
 #include "InvisibleTile.h"
 #include "Cultist.h"
+#include "PlayerSpear.h"
 
 #define PI 3.14159265
 #define DEGREES(x) int((x)/360.0*0xFFFFFF)
@@ -437,44 +438,25 @@ int main(int argc, char **argv) {
 				//player movement/attacks
 				if (PlayerLunge == true) {//lunge, only true when Mouse Button is released
 					player->Lunge(StoredMouseAngle);
-					if (player->GetChargeTime() <= 0)
+					
+					if (player->GetChargeTime() <= 0) {
 						PlayerLunge = false;
-					//visual effect to represent how long player has charged:
-					if (player->GetChargeTime() <= 20) {
-						Mist *mist = new Mist();
-						mist->Init(ColorImage, player->GetX() + (player->GetBoundX() / 2), player->GetY() + player->GetBoundY(), SMOKE);
-						objects.push_back(mist);
-					}
-					else if (player->GetChargeTime() > 20 && player->GetChargeTime() < 40) {
-						Mist *mist = new Mist();
-						mist->Init(ColorImage, player->GetX() + (player->GetBoundX() / 2), player->GetY() + player->GetBoundY(), FIRE);
-						objects.push_back(mist);
-					}
-					else if (player->GetChargeTime() >= 40) {
-						Mist *mist = new Mist();
-						mist->Init(ColorImage, player->GetX() + (player->GetBoundX() / 2), player->GetY() + player->GetBoundY(), WISP);
-						objects.push_back(mist);
+						for (iter = objects.begin(); iter != objects.end(); ++iter)//deletes player spear
+						{
+							if ((*iter)->GetID() == PLAYERSPEAR)
+								(*iter)->SetAlive(false);
+						}
+
 					}
 				}			
 				else if (keys[MOUSE_BUTTON]) {//charging
+					if (player->GetChargeTime() == 0) {//beginning of charge
+						PlayerSpear *playerspear = new PlayerSpear();
+						playerspear->Init(PlayerImage, ColorImage, player->GetX() + player->GetBoundX() / 2, player->GetY() + player->GetBoundY() / 2, MouseAngle);
+						objects.push_back(playerspear);
+					}
 					player->Charge(mousex);
 					StoredMouseAngle = MouseAngle;
-					//visual effect to represent how long player has charged:
-					if (player->GetChargeTime() <= 20) {
-						Mist *mist = new Mist();
-						mist->Init(ColorImage, player->GetX() + (player->GetBoundX() / 2), player->GetY() + player->GetBoundY(), SMOKE);
-						objects.push_back(mist);
-					}
-					else if (player->GetChargeTime() > 20 && player->GetChargeTime() < 40) {
-						Mist *mist = new Mist();
-						mist->Init(ColorImage, player->GetX() + (player->GetBoundX() / 2), player->GetY() + player->GetBoundY(), FIRE);
-						objects.push_back(mist);
-					}
-					else if (player->GetChargeTime() >= 40) {
-						Mist *mist = new Mist();
-						mist->Init(ColorImage, player->GetX() + (player->GetBoundX() / 2), player->GetY() + player->GetBoundY(), WISP);
-						objects.push_back(mist);
-					}
 				}			
 				else {//basic movement
 					player->SetChargeTime(0);
@@ -537,6 +519,10 @@ int main(int argc, char **argv) {
 				}
 				if (keys[NUM_6])
 				{
+					PlayerSpear *playerspear = new PlayerSpear();
+					playerspear->Init(PlayerImage, ColorImage, mousex, mousey, MouseAngle);
+					objects.push_back(playerspear);
+					cout << "created spear" << endl;
 					keys[NUM_6] = false;
 				}
 				if (keys[NUM_7])
@@ -589,7 +575,8 @@ int main(int argc, char **argv) {
 				{
 					if ((*iter)->GetID() != MISTSPAWNER &&//list of items that actually require the entire object list.
 						(*iter)->GetID() != MIST &&
-						(*iter)->GetID() != CULTIST)
+						(*iter)->GetID() != CULTIST && 
+						(*iter)->GetID() != PLAYERSPEAR)
 						(*iter)->Update(cameraXDir, cameraYDir, blank);
 					else
 						(*iter)->Update(cameraXDir, cameraYDir, objects);

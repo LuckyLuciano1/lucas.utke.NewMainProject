@@ -23,7 +23,6 @@ void Player::Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y, int ref_dir
 	Health = 5;
 	Timer = 0;
 	ChargeTime = 0;
-	ChargeTrue = false;
 
 	maxFrame = 4;
 	curFrame = 1;
@@ -105,9 +104,7 @@ void Player::Dash(double MouseAngle) {
 }
 void Player::Charge(int mousex) {
 	cout << ChargeTime << endl;
-	if (ChargeTime >= 40)
-		ChargeTrue = true;
-	else
+	if (ChargeTime <= 40)
 		ChargeTime++;
 
 	if (x > mousex)
