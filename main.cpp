@@ -98,11 +98,12 @@ int main(int argc, char **argv) {
 	double PlayerPosX = cameraXPos + (SCREENW / 2);
 	double PlayerPosY = cameraYPos + (SCREENH / 2);
 
-	double MouseAngle = 0;
+	double P_M_AngleDegrees = 0;
+	double P_M_AngleRadians = 0;
 	int countercoltest = 0;
 
 	bool PlayerLunge = false;//keeps track of when mouse is released, resulting in lunge attack
-	double StoredMouseAngle = 0;//keeps track of MouseAngle a few frames ago (stored when player charges)
+	double StoredP_M_AngleRadians = 0;//keeps track of P_M_AngleDegrees a few frames ago (stored when player charges)
 
 	bool CloudMap[MAPH][MAPW] = {};
 	int Map[MAPH][MAPW] = {};
@@ -149,13 +150,13 @@ int main(int argc, char **argv) {
 		return -1;
 	al_get_display_mode(al_get_num_display_modes() - 1, &disp_data);
 	
-	if (SCREENW == disp_data.width && SCREENH == disp_data.height) {
+	/*if (SCREENW == disp_data.width && SCREENH == disp_data.height) {
 		al_set_new_display_flags(ALLEGRO_FULLSCREEN);
 		display = al_create_display(disp_data.width, disp_data.height);
 	}
-	else {
+	else {*/
 		display = al_create_display(SCREENW - 100, SCREENH - 100);		//create our display object
-	}
+	//}
 
 	if (!display)//test display object
 		return -1;
@@ -407,13 +408,17 @@ int main(int argc, char **argv) {
 			//=====================
 			if (state == PLAYING)//if playing, receive movement and other stuff
 			{
-				//updating camerapos/dir and mouseangle, + others later
-				MouseAngle = atan2(mousey - player->GetY(), mousex - player->GetX()) * 180 / PI;//calculating MouseAngle for bullets and guns
-				if (MouseAngle < 0)
-					MouseAngle *= -1;
-				else if (MouseAngle > 0) {
-					MouseAngle = 360 - MouseAngle;
+				//updating camerapos/dir and MouseAngle, + others later:
+
+				//MouseAngle Degrees and Radians
+				P_M_AngleDegrees = atan2(mousey - (player->GetY() + player->GetBoundY() / 2), mousex - (player->GetX() + player->GetBoundX()/2)) * 180 / PI;//calculating P_M_AngleDegrees
+				if (P_M_AngleDegrees < 0)
+					P_M_AngleDegrees *= -1;
+				else if (P_M_AngleDegrees > 0) {
+					P_M_AngleDegrees = 360 - P_M_AngleDegrees;
 				}
+				P_M_AngleRadians = P_M_AngleDegrees / 180 * PI;
+
 				//camera control
 				if ((cameraXPos - -PLAYERVELX*(player->GetX() - (SCREENW / 2)) / 100) > 0 && (cameraXPos + SCREENW - -PLAYERVELX*(player->GetX() - (SCREENW / 2)) / 100) < WORLDW)//to stop camera from exceeding mapsize
 					cameraXDir = -PLAYERVELX*(player->GetX() - (SCREENW / 2)) / 100;//velocity of camera is dependent on distance from player
@@ -434,31 +439,55 @@ int main(int argc, char **argv) {
 				//-hold left mouse button to charge attack (cannot move during time). will voice audio when ready
 				//-when left mouse button released and charging is sufficient, dash
 				//-(may not be possible) right mouse button to dash.
-
+				
+				cout << "(" << player->GetX() << ", " << player->GetY() << ")" << endl;
+				
 				//player movement/attacks
-				if (PlayerLunge == true) {//lunge, only true when Mouse Button is released
-					player->Lunge(StoredMouseAngle);
-					
-					if (player->GetChargeTime() <= 0) {
+							
+				if (keys[MOUSE_BUTTON]) {//charging
+
+					if (player->GetChargeTime() == 0) {//beginning of charge, creates spear
+						//cout << "BEGIN CHARGE" << endl;
+						PlayerSpear *playerspear = new PlayerSpear();
+						playerspear->Init(PlayerImage, ColorImage, player->GetX() + player->GetBoundX() / 2, player->GetY() + player->GetBoundY() / 2, atan2(mousey - (player->GetY() + player->GetBoundY() / 2), mousex - (player->GetX() + player->GetBoundX() / 2)));
+						objects.push_back(playerspear);
+
+						playerspear->SetSpearState(0);//set to spin while  charging
+						player->SetLungeTime(20);//for later lunge
+					}
+
+					player->Charge(mousex);
+					StoredP_M_AngleRadians = P_M_AngleRadians;
+				}	
+				else if (PlayerLunge == true) {//lunge, only true when Mouse Button is released
+					if (player->GetLungeTime() >= 20) {//sets up spear at beginning of lunge
+						cout << "BEGIN LUNGE" << endl;
+						for (iter = objects.begin(); iter != objects.end(); ++iter)//deletes player spear
+						{
+							if ((*iter)->GetID() == PLAYERSPEAR)
+								(*iter)->SetAlive(false);
+						}
+						PlayerSpear *playerspear = new PlayerSpear();//creates new player spear in order to reference coordinates easily
+						playerspear->Init(PlayerImage, ColorImage, player->GetX() + player->GetBoundX() / 2, player->GetY() + player->GetBoundY() / 2, atan2(mousey - (player->GetY() + player->GetBoundY() / 2), mousex - (player->GetX() + player->GetBoundX() / 2)));
+						objects.push_back(playerspear);
+
+						playerspear->SetSpearState(1);//set to lunge
+					}
+
+					if (player->GetLungeTime() <= 0 && PlayerLunge == true) {//deletes spear at end of lunge (and tracks end of lunge)
+																			 //cout << "END LUNGE" << endl;
 						PlayerLunge = false;
 						for (iter = objects.begin(); iter != objects.end(); ++iter)//deletes player spear
 						{
 							if ((*iter)->GetID() == PLAYERSPEAR)
 								(*iter)->SetAlive(false);
 						}
+					}
 
-					}
-				}			
-				else if (keys[MOUSE_BUTTON]) {//charging
-					if (player->GetChargeTime() == 0) {//beginning of charge
-						PlayerSpear *playerspear = new PlayerSpear();
-						playerspear->Init(PlayerImage, ColorImage, player->GetX() + player->GetBoundX() / 2, player->GetY() + player->GetBoundY() / 2, MouseAngle);
-						objects.push_back(playerspear);
-					}
-					player->Charge(mousex);
-					StoredMouseAngle = MouseAngle;
-				}			
+					player->Lunge(StoredP_M_AngleRadians);
+				}
 				else {//basic movement
+					//cout << "MOVEMENT FUNC ACTIVE" << endl;
 					player->SetChargeTime(0);
 					if (keys[UP]) {//player movement
 						player->MoveUp();
@@ -520,7 +549,7 @@ int main(int argc, char **argv) {
 				if (keys[NUM_6])
 				{
 					PlayerSpear *playerspear = new PlayerSpear();
-					playerspear->Init(PlayerImage, ColorImage, mousex, mousey, MouseAngle);
+					playerspear->Init(PlayerImage, ColorImage, mousex, mousey, P_M_AngleDegrees);
 					objects.push_back(playerspear);
 					cout << "created spear" << endl;
 					keys[NUM_6] = false;

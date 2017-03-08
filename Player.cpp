@@ -98,13 +98,12 @@ void Player::ResetAnimation(int position)
 	
 }
 
-void Player::Dash(double MouseAngle) {
-	dirX = sin((MouseAngle + 90) / 180 * PI);
-	dirY = cos((MouseAngle + 90) / 180 * PI);
+void Player::Dash(double MouseAngleRadians) {
+	dirX = sin(MouseAngleRadians + PI/2);
+	dirY = cos(MouseAngleRadians + PI/2);
 }
 void Player::Charge(int mousex) {
-	cout << ChargeTime << endl;
-	if (ChargeTime <= 40)
+	if (ChargeTime < 60)
 		ChargeTime++;
 
 	if (x > mousex)
@@ -113,12 +112,10 @@ void Player::Charge(int mousex) {
 		Animation = CHARGERIGHT;
 	AnimationHandler();
 }
-void Player::Lunge(double MouseAngle) {
-
-	velX = PLAYERVELX+ChargeTime;
-	velY = PLAYERVELY+ChargeTime;
-	dirX = sin((MouseAngle + 90) / 180 * PI);
-	dirY = cos((MouseAngle + 90) / 180 * PI);
+void Player::Lunge(double MouseAngleRadians) {
+	dirX = sin(MouseAngleRadians + PI/2);
+	dirY = cos(MouseAngleRadians + PI/2);
+	LungeTime--;
 
 	if (dirX < 0)
 		Animation = LUNGELEFT;
@@ -126,7 +123,6 @@ void Player::Lunge(double MouseAngle) {
 		Animation = LUNGERIGHT;
 
 	AnimationHandler();
-	ChargeTime-=2;
 }
 
 //sets up the various variables that come alongside the Animation states. called whenever Animation is changed
@@ -170,8 +166,8 @@ void Player::AnimationHandler()
 		frameHeight = 72;
 		boundX = 69;
 		boundY = 72;
-		velX = PLAYERVELX*(sqrt(ChargeTime))/2;
-		velY = PLAYERVELY*(sqrt(ChargeTime))/2;
+		velX = PLAYERVELX*(sqrt(LungeTime));
+		velY = PLAYERVELY*(sqrt(LungeTime));
 	}
 	else if (Animation == LUNGERIGHT) {
 		curAnim = (97 * 7) / 69;
@@ -180,8 +176,8 @@ void Player::AnimationHandler()
 		frameHeight = 72;
 		boundX = 69;
 		boundY = 72;
-		velX = PLAYERVELX*(sqrt(ChargeTime))/2;
-		velY = PLAYERVELY*(sqrt(ChargeTime))/2;
+		velX = PLAYERVELX*(sqrt(LungeTime));
+		velY = PLAYERVELY*(sqrt(LungeTime));
 	}
 	else if (Animation == DASHLEFT) {
 		cout << "DASHLEFT is not finished. get off your ass and finish it, future self." << endl;
