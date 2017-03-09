@@ -39,7 +39,9 @@ enum ID {//new prototype ID system, that might work better when handling unique 
 	SCROLLER, 
 	SHADOWEDBLOCK, 
 	TERRAIN, 
-	PLAYERSPEAR
+	PLAYERSPEAR,
+	PLAYERSPEARFLAME,
+	DUST
 };
 enum TIER {	TIER0A, TIER0B, TIER0C,//background + base, clouds
 			TIER1A, //tile

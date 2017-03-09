@@ -54,7 +54,7 @@ void Player::Render()
 }
 
 void Player::MoveUp() {
-	if (Animation == MOVINGRIGHT || Animation == IDLERIGHT || Animation == DASHRIGHT)
+	if (Animation == MOVINGRIGHT || Animation == IDLERIGHT || Animation == DASHRIGHT || Animation == LUNGERIGHT)
 		Animation = MOVINGRIGHT;
 	else
 		Animation = MOVINGLEFT;
@@ -62,7 +62,7 @@ void Player::MoveUp() {
 	AnimationHandler();
 }
 void Player::MoveDown() {
-	if (Animation == MOVINGRIGHT || Animation == IDLERIGHT || Animation == DASHRIGHT)
+	if (Animation == MOVINGRIGHT || Animation == IDLERIGHT || Animation == DASHRIGHT || Animation == LUNGERIGHT)
 		Animation = MOVINGRIGHT;
 	else
 		Animation = MOVINGLEFT;
@@ -83,10 +83,14 @@ void Player::MoveRight() {
 void Player::ResetAnimation(int position)
 {
 	if (position == 1) {
-		if (Animation == MOVINGLEFT)
+		if (Animation == MOVINGLEFT || Animation == IDLELEFT || Animation == DASHLEFT)
 			Animation = IDLELEFT;
-		else if (Animation == MOVINGRIGHT)
+		else if (Animation == MOVINGRIGHT || Animation == IDLERIGHT || Animation == DASHRIGHT)
 			Animation = IDLERIGHT;
+		else if (Animation == LUNGERIGHT)
+			Animation = CHARGERIGHT;
+		else if (Animation == LUNGELEFT)
+			Animation = CHARGELEFT;
 		dirY = 0;
 		AnimationHandler();
 	}
@@ -160,7 +164,7 @@ void Player::AnimationHandler()
 		maxFrame = 1;
 	}
 	else if (Animation == LUNGELEFT) {
-		curAnim = (97 * 6) / 69; 
+		curAnim = (97 * 6) / 69;
 		maxFrame = 1;
 		frameWidth = 69;
 		frameHeight = 72;
@@ -188,5 +192,5 @@ void Player::AnimationHandler()
 
 	//sets curFrame based on maxFrame
 	if (curFrame > maxFrame)
-		curFrame = maxFrame-1;
+		curFrame = 0;
 }

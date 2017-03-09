@@ -1,52 +1,44 @@
-#include "Mist.h"
-Mist::Mist() {}
+#include "Dust.h"
+Dust::Dust() {}
 
-void Mist::Destroy()
+void Dust::Destroy()
 {
 	GameObject::Destroy();
 }
 
-void Mist::Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y, int ref_MistID)
+void Dust::Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y, int ref_SpawnSize_x, int ref_SpawnSize_y)
 {
 
 	RandDirX = (rand() % 20);
 	if (rand() % 2 == 1)
 		RandDirX *= -1;
 	RandDirY = (rand() % 100);
-		RandDirY *= -1;
+	RandDirY *= -1;
 
 	RandSize = rand() % 30 + 10;//size from 10 - 30
 	frameWidth = RandSize;
 	frameHeight = RandSize;
 
-	GameObject::Init(ref_x, ref_y, 2, 2, RandDirX / 100, RandDirY / 100, frameWidth, frameHeight, MIST, TIER1C);
+	GameObject::Init(ref_x, ref_y, 2, 2, RandDirX / 100, RandDirY / 100, frameWidth, frameHeight, Dust, TIER1C);
 
 	SetCollidable(false);
 	SetOrigCollidable(false);
 	SetAlive(true);
 
 
-	MistID = ref_MistID;
 	image_x = 0;
-	if (MistID == FIRE)
-		image_y = 0;
-	else if (MistID == SMOKE)
-		image_y = 1500;
-	else if (MistID == WISP)
-		image_y = 2000;
-	else
-		image_y = 0;
+	image_y = 3000;
 
 	if (image != NULL)
-		Mist::image = image;
+		Dust::image = image;
 }
 
-void Mist::Update(double cameraX, double cameraY, vector<GameObject*> &objects)
+void Dust::Update(double cameraX, double cameraY, vector<GameObject*> &objects)
 {
 	GameObject::Update(cameraX, cameraY, objects);
 	frameWidth--;
 	frameHeight--;
-	if (MistID == FIRE) {
+	if (DustID == FIRE) {
 		if ((frameWidth > 15) || (frameHeight > 15)) {
 			image_y = 0;
 		}
@@ -63,7 +55,7 @@ void Mist::Update(double cameraX, double cameraY, vector<GameObject*> &objects)
 }
 
 //does not use animation rows, sprites, etc. unnecessary for basic box sprite.
-void Mist::Render()
+void Dust::Render()
 {
 	GameObject::Render();
 	al_draw_tinted_bitmap_region(image, al_map_rgba_f(1, 1, 1, 0.3), image_x, image_y, frameWidth, frameHeight, x, y, 0);

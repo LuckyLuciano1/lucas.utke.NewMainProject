@@ -111,9 +111,10 @@ int main(int argc, char **argv) {
 	//==============================================
 	//PROJECT VARIABLES
 	//==============================================
-	Player *player;
-
-	player = new Player();
+	Player *player = new Player();
+	PlayerSpear *playerspear = new PlayerSpear();
+	//PlayerSpear *playerspear;
+	//playerspear = new PlayerSpear();
 	int state = -1;
 
 	ALLEGRO_BITMAP *TerrainImage = NULL;
@@ -440,54 +441,53 @@ int main(int argc, char **argv) {
 				//-when left mouse button released and charging is sufficient, dash
 				//-(may not be possible) right mouse button to dash.
 				
-				cout << "(" << player->GetX() << ", " << player->GetY() << ")" << endl;
+				//cout << "(" << player->GetX() << ", " << player->GetY() << ")" << endl;
 				
 				//player movement/attacks
-							
-				if (keys[MOUSE_BUTTON]) {//charging
+				if (PlayerLunge == true) {//lunge, only true when Mouse Button is released
+					player->Lunge(StoredP_M_AngleRadians);
+
+					if (player->GetLungeTime() >= 20) {//sets up spear at beginning of lunge
+						for (iter = objects.begin(); iter != objects.end(); ++iter)//deletes player spear
+						{
+							if ((*iter)->GetID() == PLAYERSPEAR)
+								(*iter)->SetAlive(false);
+						}
+						//creates new player spear in order to reference coordinates easily
+						playerspear->Init(PlayerImage, ColorImage, player->GetX() + player->GetBoundX() / 2, player->GetY() + player->GetBoundY() / 2, atan2(mousey - (player->GetY() + player->GetBoundY() / 2), mousex - (player->GetX() + player->GetBoundX() / 2)), 1, player->GetChargeTime());
+						//erases old spears to eliminate copies
+						for (iter = objects.begin(); iter != objects.end(); ++iter)
+						{
+							if ((*iter)->GetID() == PLAYERSPEAR)
+								iter = objects.erase(iter);
+						}
+						objects.push_back(playerspear);
+					}
+
+					else if (player->GetLungeTime() <= 0) {//deletes spear at end of lunge (and tracks end of lunge)
+						PlayerLunge = false;
+						for (iter = objects.begin(); iter != objects.end(); ++iter)
+						{
+							if ((*iter)->GetID() == PLAYERSPEAR)
+								iter = objects.erase(iter);
+						}
+						player->ResetAnimation(0);
+						player->ResetAnimation(1);
+					}
+
+				}
+				else if (keys[MOUSE_BUTTON]) {//charging
 
 					if (player->GetChargeTime() == 0) {//beginning of charge, creates spear
-						//cout << "BEGIN CHARGE" << endl;
-						PlayerSpear *playerspear = new PlayerSpear();
-						playerspear->Init(PlayerImage, ColorImage, player->GetX() + player->GetBoundX() / 2, player->GetY() + player->GetBoundY() / 2, atan2(mousey - (player->GetY() + player->GetBoundY() / 2), mousex - (player->GetX() + player->GetBoundX() / 2)));
+						playerspear->Init(PlayerImage, ColorImage, player->GetX() + player->GetBoundX() / 2, player->GetY() + player->GetBoundY() / 2, atan2(mousey - (player->GetY() + player->GetBoundY() / 2), mousex - (player->GetX() + player->GetBoundX() / 2)), 0, player->GetChargeTime());
 						objects.push_back(playerspear);
-
-						playerspear->SetSpearState(0);//set to spin while  charging
-						player->SetLungeTime(20);//for later lunge
+						player->SetLungeTime(21);//for later lunge
 					}
-
-					player->Charge(mousex);
+					playerspear->SetChargeTime(player->GetChargeTime());
 					StoredP_M_AngleRadians = P_M_AngleRadians;
+					player->Charge(mousex);			
 				}	
-				else if (PlayerLunge == true) {//lunge, only true when Mouse Button is released
-					if (player->GetLungeTime() >= 20) {//sets up spear at beginning of lunge
-						cout << "BEGIN LUNGE" << endl;
-						for (iter = objects.begin(); iter != objects.end(); ++iter)//deletes player spear
-						{
-							if ((*iter)->GetID() == PLAYERSPEAR)
-								(*iter)->SetAlive(false);
-						}
-						PlayerSpear *playerspear = new PlayerSpear();//creates new player spear in order to reference coordinates easily
-						playerspear->Init(PlayerImage, ColorImage, player->GetX() + player->GetBoundX() / 2, player->GetY() + player->GetBoundY() / 2, atan2(mousey - (player->GetY() + player->GetBoundY() / 2), mousex - (player->GetX() + player->GetBoundX() / 2)));
-						objects.push_back(playerspear);
-
-						playerspear->SetSpearState(1);//set to lunge
-					}
-
-					if (player->GetLungeTime() <= 0 && PlayerLunge == true) {//deletes spear at end of lunge (and tracks end of lunge)
-																			 //cout << "END LUNGE" << endl;
-						PlayerLunge = false;
-						for (iter = objects.begin(); iter != objects.end(); ++iter)//deletes player spear
-						{
-							if ((*iter)->GetID() == PLAYERSPEAR)
-								(*iter)->SetAlive(false);
-						}
-					}
-
-					player->Lunge(StoredP_M_AngleRadians);
-				}
 				else {//basic movement
-					//cout << "MOVEMENT FUNC ACTIVE" << endl;
 					player->SetChargeTime(0);
 					if (keys[UP]) {//player movement
 						player->MoveUp();
@@ -509,7 +509,6 @@ int main(int argc, char **argv) {
 						player->ResetAnimation(0);
 					}
 				}
-
 				//number keys (temporary, for testing purposes)
 				if (keys[NUM_1])//temp
 				{
@@ -548,10 +547,6 @@ int main(int argc, char **argv) {
 				}
 				if (keys[NUM_6])
 				{
-					PlayerSpear *playerspear = new PlayerSpear();
-					playerspear->Init(PlayerImage, ColorImage, mousex, mousey, P_M_AngleDegrees);
-					objects.push_back(playerspear);
-					cout << "created spear" << endl;
 					keys[NUM_6] = false;
 				}
 				if (keys[NUM_7])
