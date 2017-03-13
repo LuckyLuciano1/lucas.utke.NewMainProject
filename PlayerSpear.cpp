@@ -22,16 +22,16 @@ void PlayerSpear::Init(ALLEGRO_BITMAP *image, ALLEGRO_BITMAP *ref_ColorImage, do
 
 	SpearAngleRadians = ref_SpearAngleRadians - (sqrt(2) / 2);
 	SpearState = ref_SpearState;
-	ChargeTime = ref_ChargeTime;
+	ChargeTime =  ref_ChargeTime;
 	if (SpearState == SPINNING) {
 		frameWidth = 1;//starts in center of image and 1x1 box. every update, will grow significantly while recentering. This will give the appearance of the spear being summoned.
 		frameHeight = 1;
-		image_x = 192 + 46;
-		image_y = 46;
+		image_x = 192 + (128/2);// 46;
+		image_y = 128 / 2;// 46;
 	}
-	else if (SpearState == LUNGING) {
-		frameWidth = 92;
-		frameHeight = 92;
+	else if (SpearState == LUNGING || SpearState == IDLE) {
+		frameWidth = 128;// 92;
+		frameHeight = 128;// 92;
 		image_x = 192;
 		image_y = 0;
 	}
@@ -59,7 +59,7 @@ void PlayerSpear::Update(double cameraX, double cameraY, vector<GameObject*> &ob
 		TargetFound = true;
 	}
 
-	if (image_x > 192 && image_y > 0 && frameWidth < 92 && frameHeight < 92) {//makes Spear expand upon creation
+	if (image_x > 192) {//makes Spear expand upon creation
 		frameWidth += 2;
 		frameHeight += 2;
 		image_x--;
@@ -68,14 +68,12 @@ void PlayerSpear::Update(double cameraX, double cameraY, vector<GameObject*> &ob
 	if (SpearState == SPINNING) {
 		SpearAngleRadians += PI / (12);// *(ChargeTime / 10));
 	}
-	if (SpearState == LUNGING) {
-		x = Target->GetX() + Target->GetBoundX() / 2;
-		y = Target->GetY() + Target->GetBoundY() / 2;
-	}
+
+	x = Target->GetX() + Target->GetBoundX() / 2;
+	y = Target->GetY() + Target->GetBoundY() / 2;
+	
 	if (SpearAngleRadians >= 2*PI)//adjusts angle to keep within 2PI range
 		SpearAngleRadians -= 2*PI;
-
-
 
 	//determines position of spear tip
 	//spear positions + x/y width formed by mouse angle and spear (found through cos/sin * hypotenuse)
@@ -92,6 +90,5 @@ void PlayerSpear::Update(double cameraX, double cameraY, vector<GameObject*> &ob
 void PlayerSpear::Render()
 {
 	GameObject::Render();
-	//cout << SpearAngleRadians << endl;
 	al_draw_tinted_scaled_rotated_bitmap_region(image, image_x, image_y, frameWidth, frameHeight, al_map_rgba_f(1, 1, 1, 1), frameWidth/2, frameHeight/2, x, y, 1, 1, SpearAngleRadians, 0);
 }

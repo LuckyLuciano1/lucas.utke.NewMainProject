@@ -9,17 +9,17 @@ void Mist::Destroy()
 void Mist::Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y, int ref_MistID)
 {
 
-	RandDirX = (rand() % 20);
+	RandDirX = (rand() % 20) / 100;
 	if (rand() % 2 == 1)
 		RandDirX *= -1;
-	RandDirY = (rand() % 100);
+	RandDirY = (rand() % 100) / 100;
 		RandDirY *= -1;
 
 	RandSize = rand() % 30 + 10;//size from 10 - 30
 	frameWidth = RandSize;
 	frameHeight = RandSize;
 
-	GameObject::Init(ref_x, ref_y, 2, 2, RandDirX / 100, RandDirY / 100, frameWidth, frameHeight, MIST, TIER1C);
+	GameObject::Init(ref_x, ref_y, 2, 2, RandDirX, RandDirY, frameWidth, frameHeight, MIST, TIER1C);
 
 	SetCollidable(false);
 	SetOrigCollidable(false);

@@ -15,8 +15,7 @@ void PlayerSpearFlame::Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y, i
 	RandDirY = (rand() % 100);
 	RandDirY *= -1;
 
-	Multiplier = ref_Multiplier;
-	RandSize = (rand() % 2 + 1)*Multiplier/4;//size from 10 - 30
+	RandSize = (rand() % 2 + 1)*ref_Multiplier/4;//size from roughly 10 - 30
 
 	frameWidth = RandSize;
 	frameHeight = RandSize;

@@ -33,6 +33,7 @@
 #include "InvisibleTile.h"
 #include "Cultist.h"
 #include "PlayerSpear.h"
+#include "Dust.h"
 
 #define PI 3.14159265
 #define DEGREES(x) int((x)/360.0*0xFFFFFF)
@@ -52,7 +53,7 @@ void Render(ALLEGRO_BITMAP *TerrainImage, double game_x, double game_y, int imag
 
 void CreateIsland(int Island[ISLANDH][ISLANDW]);
 void MapDetailing(int Map[MAPH][MAPW], int MapDetail[MAPH][MAPW]);
-void ChangeState(ALLEGRO_BITMAP *TerrainImage, ALLEGRO_BITMAP *bgImage, ALLEGRO_BITMAP *CloudImage, ALLEGRO_BITMAP *GrassImage, ALLEGRO_BITMAP *ColorImage, ALLEGRO_BITMAP *PlayerImage, Player *player, bool CloudMap[MAPH][MAPW], int Map[MAPH][MAPW], int &state, int newState, double &PlayerPosX, double &PlayerPosY, double &cameraXPos, double &cameraYPos);
+void ChangeState(ALLEGRO_BITMAP *TerrainImage, ALLEGRO_BITMAP *bgImage, ALLEGRO_BITMAP *CloudImage, ALLEGRO_BITMAP *GrassImage, ALLEGRO_BITMAP *ColorImage, ALLEGRO_BITMAP *PlayerImage, Player *player, PlayerSpear *playerspear, bool CloudMap[MAPH][MAPW], int Map[MAPH][MAPW], int &state, int newState, double &PlayerPosX, double &PlayerPosY, double &cameraXPos, double &cameraYPos);
 
 bool compare(GameObject *L1, GameObject *L2);
 
@@ -113,8 +114,7 @@ int main(int argc, char **argv) {
 	//==============================================
 	Player *player = new Player();
 	PlayerSpear *playerspear = new PlayerSpear();
-	//PlayerSpear *playerspear;
-	//playerspear = new PlayerSpear();
+
 	int state = -1;
 
 	ALLEGRO_BITMAP *TerrainImage = NULL;
@@ -128,6 +128,7 @@ int main(int argc, char **argv) {
 	ALLEGRO_BITMAP *GrassImage = NULL;
 	ALLEGRO_BITMAP *ColorImage = NULL;
 	ALLEGRO_BITMAP *CultistImage = NULL;
+	ALLEGRO_BITMAP *OverheadShadowImage = NULL;
 
 	ALLEGRO_SAMPLE *song = NULL;
 	ALLEGRO_SAMPLE *shot = NULL;
@@ -215,6 +216,8 @@ int main(int argc, char **argv) {
 	al_convert_mask_to_alpha(BirdImage, al_map_rgb(255, 255, 255));
 	al_convert_mask_to_alpha(BirdImage, al_map_rgb(181, 230, 29));
 
+	OverheadShadowImage = al_load_bitmap("OverheadShadowImage.png");
+
 	shot = al_load_sample("Gunshot.wav");
 	song = al_load_sample("Titan.mp3");
 	ChargeSuccessAudio = al_load_sample("ChargeSuccessAudio.wav");
@@ -225,7 +228,7 @@ int main(int argc, char **argv) {
 
 	al_attach_sample_instance_to_mixer(songInstance, al_get_default_mixer());
 
-	ChangeState(TerrainImage, bgImage, CloudImage, GrassImage, ColorImage, PlayerImage, player, CloudMap, Map, state, TITLE, PlayerPosX, PlayerPosY, cameraXPos, cameraYPos);
+	ChangeState(TerrainImage, bgImage, CloudImage, GrassImage, ColorImage, PlayerImage, player, playerspear, CloudMap, Map, state, TITLE, PlayerPosX, PlayerPosY, cameraXPos, cameraYPos);
 
 	srand(time(NULL));
 	//==============================================
@@ -315,10 +318,10 @@ int main(int argc, char **argv) {
 			case ALLEGRO_KEY_ENTER:
 				keys[ENTER] = true;
 				if (state == TITLE) {
-					ChangeState(TerrainImage, bgImage, CloudImage, GrassImage, ColorImage, PlayerImage, player, CloudMap, Map, state, PLAYING, PlayerPosX, PlayerPosY, cameraXPos, cameraYPos);
+					ChangeState(TerrainImage, bgImage, CloudImage, GrassImage, ColorImage, PlayerImage, player, playerspear, CloudMap, Map, state, PLAYING, PlayerPosX, PlayerPosY, cameraXPos, cameraYPos);
 				}
 				else if (state == PLAYING)
-					ChangeState(TerrainImage, bgImage, CloudImage, GrassImage, ColorImage, PlayerImage, player, CloudMap, Map, state, TITLE, PlayerPosX, PlayerPosY, cameraXPos, cameraYPos);
+					ChangeState(TerrainImage, bgImage, CloudImage, GrassImage, ColorImage, PlayerImage, player, playerspear, CloudMap, Map, state, TITLE, PlayerPosX, PlayerPosY, cameraXPos, cameraYPos);
 				break;
 			case ALLEGRO_KEY_LSHIFT:
 				keys[SHIFT] = true;
@@ -412,7 +415,7 @@ int main(int argc, char **argv) {
 				//updating camerapos/dir and MouseAngle, + others later:
 
 				//MouseAngle Degrees and Radians
-				P_M_AngleDegrees = atan2(mousey - (player->GetY() + player->GetBoundY() / 2), mousex - (player->GetX() + player->GetBoundX()/2)) * 180 / PI;//calculating P_M_AngleDegrees
+				P_M_AngleDegrees = atan2(mousey - (player->GetY() + player->GetBoundY() / 2), mousex - (player->GetX() + player->GetBoundX() / 2)) * 180 / PI;//calculating P_M_AngleDegrees
 				if (P_M_AngleDegrees < 0)
 					P_M_AngleDegrees *= -1;
 				else if (P_M_AngleDegrees > 0) {
@@ -439,48 +442,27 @@ int main(int argc, char **argv) {
 				//-WASD for movement
 				//-hold left mouse button to charge attack (cannot move during time). will voice audio when ready
 				//-when left mouse button released and charging is sufficient, dash
-				//-(may not be possible) right mouse button to dash.
+
+				//cout << "(" << playerspear->GetX() << ", " << playerspear->GetY() << ")" << endl;
+
 				
-				//cout << "(" << player->GetX() << ", " << player->GetY() << ")" << endl;
-				
+				if (playerspear->GetSpearState() == 2) {//idle
+					playerspear->SetAngle(atan2(mousey - (player->GetY() + player->GetBoundY() / 2), mousex - (player->GetX() + player->GetBoundX() / 2)));
+				}
 				//player movement/attacks
 				if (PlayerLunge == true) {//lunge, only true when Mouse Button is released
 					player->Lunge(StoredP_M_AngleRadians);
 
-					if (player->GetLungeTime() >= 20) {//sets up spear at beginning of lunge
-						for (iter = objects.begin(); iter != objects.end(); ++iter)//deletes player spear
-						{
-							if ((*iter)->GetID() == PLAYERSPEAR)
-								(*iter)->SetAlive(false);
-						}
-						//creates new player spear in order to reference coordinates easily
-						playerspear->Init(PlayerImage, ColorImage, player->GetX() + player->GetBoundX() / 2, player->GetY() + player->GetBoundY() / 2, atan2(mousey - (player->GetY() + player->GetBoundY() / 2), mousex - (player->GetX() + player->GetBoundX() / 2)), 1, player->GetChargeTime());
-						//erases old spears to eliminate copies
-						for (iter = objects.begin(); iter != objects.end(); ++iter)
-						{
-							if ((*iter)->GetID() == PLAYERSPEAR)
-								iter = objects.erase(iter);
-						}
-						objects.push_back(playerspear);
-					}
-
-					else if (player->GetLungeTime() <= 0) {//deletes spear at end of lunge (and tracks end of lunge)
+					if (player->GetLungeTime() <= 0) {//runs at end of lunge
 						PlayerLunge = false;
-						for (iter = objects.begin(); iter != objects.end(); ++iter)
-						{
-							if ((*iter)->GetID() == PLAYERSPEAR)
-								iter = objects.erase(iter);
-						}
 						player->ResetAnimation(0);
 						player->ResetAnimation(1);
 					}
-
 				}
 				else if (keys[MOUSE_BUTTON]) {//charging
 
 					if (player->GetChargeTime() == 0) {//beginning of charge, creates spear
-						playerspear->Init(PlayerImage, ColorImage, player->GetX() + player->GetBoundX() / 2, player->GetY() + player->GetBoundY() / 2, atan2(mousey - (player->GetY() + player->GetBoundY() / 2), mousex - (player->GetX() + player->GetBoundX() / 2)), 0, player->GetChargeTime());
-						objects.push_back(playerspear);
+						player->SetChargeTime(10);
 						player->SetLungeTime(21);//for later lunge
 					}
 					playerspear->SetChargeTime(player->GetChargeTime());
@@ -512,7 +494,7 @@ int main(int argc, char **argv) {
 				//number keys (temporary, for testing purposes)
 				if (keys[NUM_1])//temp
 				{
-					ChangeState(TerrainImage, bgImage, CloudImage, GrassImage, ColorImage, PlayerImage, player, CloudMap, Map, state, PLAYING, PlayerPosX, PlayerPosY, cameraXPos, cameraYPos);
+					ChangeState(TerrainImage, bgImage, CloudImage, GrassImage, ColorImage, PlayerImage, player, playerspear, CloudMap, Map, state, PLAYING, PlayerPosX, PlayerPosY, cameraXPos, cameraYPos);
 					keys[NUM_1] = false;
 				}
 
@@ -547,19 +529,19 @@ int main(int argc, char **argv) {
 				}
 				if (keys[NUM_6])
 				{
-					keys[NUM_6] = false;
+					//keys[NUM_6] = false;
 				}
 				if (keys[NUM_7])
 				{
-					keys[NUM_7] = false;
+					//keys[NUM_7] = false;
 				}
 				if (keys[NUM_8])
 				{
-					keys[NUM_8] = false;
+					//keys[NUM_8] = false;
 				}
 				if (keys[NUM_9])
 				{
-					keys[NUM_9] = false;
+					//keys[NUM_9] = false;
 				}
 
 				//collisions
@@ -600,7 +582,8 @@ int main(int argc, char **argv) {
 					if ((*iter)->GetID() != MISTSPAWNER &&//list of items that actually require the entire object list.
 						(*iter)->GetID() != MIST &&
 						(*iter)->GetID() != CULTIST && 
-						(*iter)->GetID() != PLAYERSPEAR)
+						(*iter)->GetID() != PLAYERSPEAR &&
+						(*iter)->GetID() != PLAYER)
 						(*iter)->Update(cameraXDir, cameraYDir, blank);
 					else
 						(*iter)->Update(cameraXDir, cameraYDir, objects);
@@ -640,6 +623,8 @@ int main(int argc, char **argv) {
 					if ((*iter)->GetRender())//based off of 'renderable' variable
 						(*iter)->Render();
 				}
+				//if(keys[NUM_6])
+				//al_draw_tinted_bitmap(OverheadShadowImage, al_map_rgba_f(255, 255, 255, .15), 0, 0, 0);//gradient that goes over screen
 			}
 			//FLIP BUFFERS========================
 			al_flip_display();
@@ -678,7 +663,7 @@ int main(int argc, char **argv) {
 	al_destroy_display(display);
 	return 0;
 }
-void ChangeState(ALLEGRO_BITMAP *TerrainImage, ALLEGRO_BITMAP *bgImage, ALLEGRO_BITMAP *CloudImage, ALLEGRO_BITMAP *GrassImage, ALLEGRO_BITMAP *ColorImage, ALLEGRO_BITMAP *PlayerImage, Player *player, bool CloudMap[MAPH][MAPW], int Map[MAPH][MAPW], int &state, int newState, double &PlayerPosX, double &PlayerPosY, double &cameraXPos, double &cameraYPos)
+void ChangeState(ALLEGRO_BITMAP *TerrainImage, ALLEGRO_BITMAP *bgImage, ALLEGRO_BITMAP *CloudImage, ALLEGRO_BITMAP *GrassImage, ALLEGRO_BITMAP *ColorImage, ALLEGRO_BITMAP *PlayerImage, Player *player, PlayerSpear *playerspear, bool CloudMap[MAPH][MAPW], int Map[MAPH][MAPW], int &state, int newState, double &PlayerPosX, double &PlayerPosY, double &cameraXPos, double &cameraYPos)
 {
 	int counter = 0;
 	bool flag1 = false;
@@ -714,25 +699,24 @@ void ChangeState(ALLEGRO_BITMAP *TerrainImage, ALLEGRO_BITMAP *bgImage, ALLEGRO_
 		for (int y = 0; y < MAPH; y++) {
 			for (int x = 0; x < MAPW; x++) {
 				if (Map[y][x] == GRASS_BASE) {
-					PlayerPosX = x * 38 - cameraXPos;
-					PlayerPosY = y * 50 - cameraYPos;
-					//cameraXPos = PlayerPosX - (SCREENW / 2);
-					//cameraYPos = PlayerPosY - (SCREENH / 2);
+					PlayerPosX = x * 39 - cameraXPos;
+					PlayerPosY = y * 96 - cameraYPos;
 					y = MAPH + 1, x = MAPW + 1;//exit
 				}
 			}
 		}
 
-		player->Init(PlayerImage, PlayerPosX, PlayerPosY, 0, 0, PLAYERVELX, PLAYERVELY);
+		player->Init(PlayerImage, ColorImage, PlayerPosX, PlayerPosY, 0, 0, PLAYERVELX, PLAYERVELY);
+		playerspear->Init(PlayerImage, ColorImage, PlayerPosX, PlayerPosY, 0, 2, 0);
 		for (iter = objects.begin(); iter != objects.end(); ++iter)
 		{
-			if ((*iter)->GetID() == PLAYER)
+			if ((*iter)->GetID() == PLAYER || (*iter)->GetID() == PLAYERSPEAR)
 				iter = objects.erase(iter);
 		}
 		objects.push_back(player);
+		objects.push_back(playerspear);
+
 		al_play_sample_instance(songInstance);
-
-
 	}
 	else if (state == LOST)
 	{

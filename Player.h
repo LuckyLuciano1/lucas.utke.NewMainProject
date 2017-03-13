@@ -7,6 +7,7 @@ using namespace std;
 class Player : public GameObject//inheritance
 {
 private:
+	ALLEGRO_BITMAP *ColorImage;
 	int Health;
 	int Timer;
 	enum ACTION {
@@ -23,7 +24,7 @@ public:
 	Player();
 	void Destroy();
 
-	void Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y, int ref_dir_x, int ref_dir_y, int ref_vel_x, int ref_vel_y);
+	void Init(ALLEGRO_BITMAP *image, ALLEGRO_BITMAP *ref_ColorImage, double ref_x, double ref_y, int ref_dir_x, int ref_dir_y, int ref_vel_x, int ref_vel_y);
 	void Update(double cameraX, double cameraY, vector<GameObject*> &objects);
 	void Render();
 

@@ -8,18 +8,12 @@ void Dust::Destroy()
 
 void Dust::Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y, int ref_SpawnSize_x, int ref_SpawnSize_y)
 {
-
-	RandDirX = (rand() % 20);
-	if (rand() % 2 == 1)
-		RandDirX *= -1;
-	RandDirY = (rand() % 100);
-	RandDirY *= -1;
-
-	RandSize = rand() % 30 + 10;//size from 10 - 30
+	RandSize = rand() % 20;
 	frameWidth = RandSize;
 	frameHeight = RandSize;
-
-	GameObject::Init(ref_x, ref_y, 2, 2, RandDirX / 100, RandDirY / 100, frameWidth, frameHeight, Dust, TIER1C);
+	x = rand() % ref_SpawnSize_x + ref_x;
+	y = rand() % ref_SpawnSize_y + ref_y;
+	GameObject::Init(x, y, 2, 2, .5, .5, frameWidth, frameHeight, DUST, TIER1C);
 
 	SetCollidable(false);
 	SetOrigCollidable(false);
@@ -36,19 +30,11 @@ void Dust::Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y, int ref_Spawn
 void Dust::Update(double cameraX, double cameraY, vector<GameObject*> &objects)
 {
 	GameObject::Update(cameraX, cameraY, objects);
-	frameWidth--;
-	frameHeight--;
-	if (DustID == FIRE) {
-		if ((frameWidth > 15) || (frameHeight > 15)) {
-			image_y = 0;
-		}
-		else if ((frameWidth <= 15 && frameWidth > 10) || (frameHeight <= 15 && frameHeight > 10)) {
-			image_y = 500;
-		}
-		else if (frameWidth <= 10 || frameHeight <= 10) {
-			image_y = 1000;
-		}
-	}
+	frameWidth-=.5;
+	frameHeight-=.5;
+	x--;
+	y--;
+
 	if (frameWidth <= 2 || frameHeight <= 2) {
 		SetAlive(false);
 	}
@@ -58,5 +44,5 @@ void Dust::Update(double cameraX, double cameraY, vector<GameObject*> &objects)
 void Dust::Render()
 {
 	GameObject::Render();
-	al_draw_tinted_bitmap_region(image, al_map_rgba_f(1, 1, 1, 0.3), image_x, image_y, frameWidth, frameHeight, x, y, 0);
+	al_draw_tinted_bitmap_region(image, al_map_rgba_f(1, 1, 1, 0.5), image_x, image_y, frameWidth, frameHeight, x, y, 0);
 }

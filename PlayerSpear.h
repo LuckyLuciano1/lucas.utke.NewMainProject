@@ -10,7 +10,7 @@ private:
 
 	int image_x;
 	int image_y;
-	enum SpearType { SPINNING, LUNGING, STABLE };
+	enum SpearType { SPINNING, LUNGING, IDLE };
 	int SpearState;
 	double SpearAngleRadians;
 	double SpearTipX;

@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "Dust.h"
 #define PI 3.14159265
 #define DEGREES(x) int((x)/360.0*0xFFFFFF)
 #define RADIANS(x) int((x)/2/M_PI*0xFFFFFF)
@@ -10,7 +11,7 @@ void Player::Destroy()
 	GameObject::Destroy();
 }
 
-void Player::Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y, int ref_dir_x, int ref_dir_y, int ref_vel_x, int ref_vel_y)
+void Player::Init(ALLEGRO_BITMAP *image, ALLEGRO_BITMAP *ref_ColorImage, double ref_x, double ref_y, int ref_dir_x, int ref_dir_y, int ref_vel_x, int ref_vel_y)
 {
 	frameWidth = 39;
 	frameHeight = 96;
@@ -27,6 +28,7 @@ void Player::Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y, int ref_dir
 	maxFrame = 4;
 	curFrame = 1;
 
+	ColorImage = ref_ColorImage;
 	if (image != NULL)
 		Player::image = image;
 }
@@ -40,6 +42,12 @@ void Player::Update(double cameraX, double cameraY, vector<GameObject*> &objects
 		curFrame++;
 		if (curFrame >= maxFrame)//looping for animation
 			curFrame = 0;
+	}
+	//if (Animation == LUNGELEFT || Animation == LUNGERIGHT || Animation == MOVINGRIGHT || Animation == MOVINGLEFT || Animation == DASHLEFT || Animation == DASHRIGHT) {
+	if(dirX != 0 || dirY != 0 ){
+		Dust *dust = new Dust();
+		dust->Init(ColorImage, x, y + frameHeight - frameWidth, frameWidth, frameWidth);
+		objects.push_back(dust);
 	}
 }
 

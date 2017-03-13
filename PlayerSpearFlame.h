@@ -13,7 +13,6 @@ private:
 	double RandDirX;
 	double RandDirY;
 	int RandSize;
-	int Multiplier;//intensity and size of flame is changed based on multiplier (will be ChargeTime of player)
 
 public:
 	PlayerSpearFlame();
