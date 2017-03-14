@@ -1,5 +1,6 @@
 #pragma once
 #include "GameObject.h"
+#include "Player.h"
 #include <iostream>
 #include <vector>
 using namespace std;
@@ -17,21 +18,18 @@ private:
 	double SpearTipY;
 	int ChargeTime;//stores how long player has charged attack for (immediately passed into PlayerSpearFlame for its Multiplier effect)
 	ALLEGRO_BITMAP *ColorImage;
-
-	bool TargetFound;//variables to find and store player information
-	vector<GameObject *>::iterator iter;
-	GameObject *Target;
+	Player *player;
 
 public:
 	PlayerSpear();
 	void Destroy();
 
-	void Init(ALLEGRO_BITMAP *image, ALLEGRO_BITMAP *ColorImage, double ref_x, double ref_y, double ref_SpearAngleRadians, int ref_SpearState, int ref_ChargeTime);
+	void Init(ALLEGRO_BITMAP *image, ALLEGRO_BITMAP *ColorImage, double ref_x, double ref_y, double ref_SpearAngleRadians, int ref_SpearState, int ref_ChargeTime, Player *ref_player);
 	void Update(double cameraX, double cameraY, vector<GameObject*> &objects);
 	void Render();
 
 	int GetAngle() { return SpearAngleRadians; }
-	void SetAngle(int SpearAngleRadians) { PlayerSpear::SpearAngleRadians = SpearAngleRadians; }
+	void SetAngle(double SpearAngleRadians) { PlayerSpear::SpearAngleRadians = SpearAngleRadians; }
 
 	int GetSpearState() { return SpearState; }
 	void SetSpearState(int SpearState) { PlayerSpear::SpearState = SpearState; }
