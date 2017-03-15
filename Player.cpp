@@ -28,6 +28,8 @@ void Player::Init(ALLEGRO_BITMAP *image, ALLEGRO_BITMAP *ref_ColorImage, double 
 	maxFrame = 4;
 	curFrame = 1;
 
+	MouseAngleRadians = 0;//temporary value
+
 	ColorImage = ref_ColorImage;
 	if (image != NULL)
 		Player::image = image;
@@ -43,8 +45,8 @@ void Player::Update(double cameraX, double cameraY, vector<GameObject*> &objects
 		if (curFrame >= maxFrame)//looping for animation
 			curFrame = 0;
 	}
-	//if (Animation == LUNGELEFT || Animation == LUNGERIGHT || Animation == MOVINGRIGHT || Animation == MOVINGLEFT || Animation == DASHLEFT || Animation == DASHRIGHT) {
-	if(dirX != 0 || dirY != 0 ){
+
+	if (dirX != 0 || dirY != 0) {//creation of dust when player moves 
 		Dust *dust = new Dust();
 		dust->Init(ColorImage, x, y + frameHeight - frameWidth, frameWidth, frameWidth);
 		objects.push_back(dust);
@@ -57,12 +59,13 @@ void Player::Render()
 	int fx = curFrame*frameWidth;
 	int fy = curAnim*frameHeight;
 
-	al_draw_tinted_bitmap_region(image, al_map_rgba_f(225, 225, 225, 0.5), frameWidth*4, frameHeight*0, 36, 18, x, BaseY - 12, 0);//shadow underneath character
+	al_draw_tinted_bitmap_region(image, al_map_rgba_f(225, 225, 225, 0.5), frameWidth * 4, frameHeight * 0, 36, 18, x, BaseY - 12, 0);//shadow underneath character
 	al_draw_bitmap_region(image, fx, fy, frameWidth, frameHeight, x, y, 0);
 }
 
 void Player::MoveUp() {
-	if (Animation == MOVINGRIGHT || Animation == IDLERIGHT || Animation == DASHRIGHT || Animation == LUNGERIGHT)
+	if (MouseAngleRadians > 3 * PI / 2 ||//animation is based on position of mouse, so that it better aligns with spear direction
+		MouseAngleRadians < PI / 2)
 		Animation = MOVINGRIGHT;
 	else
 		Animation = MOVINGLEFT;
@@ -70,7 +73,8 @@ void Player::MoveUp() {
 	AnimationHandler();
 }
 void Player::MoveDown() {
-	if (Animation == MOVINGRIGHT || Animation == IDLERIGHT || Animation == DASHRIGHT || Animation == LUNGERIGHT)
+	if (MouseAngleRadians > 3 * PI / 2 ||
+		MouseAngleRadians < PI / 2)
 		Animation = MOVINGRIGHT;
 	else
 		Animation = MOVINGLEFT;
@@ -78,12 +82,20 @@ void Player::MoveDown() {
 	AnimationHandler();
 }
 void Player::MoveLeft() {
-	Animation = MOVINGLEFT;
+	if (MouseAngleRadians > 3 * PI / 2 ||
+		MouseAngleRadians < PI / 2)
+		Animation = MOVINGRIGHT;
+	else
+		Animation = MOVINGLEFT;
 	dirX = -1;
 	AnimationHandler();
 }
 void Player::MoveRight() {
-	Animation = MOVINGRIGHT;
+	if (MouseAngleRadians > 3 * PI / 2 ||
+		MouseAngleRadians < PI / 2)
+		Animation = MOVINGRIGHT;
+	else
+		Animation = MOVINGLEFT;
 	dirX = 1;
 	AnimationHandler();
 }
@@ -91,28 +103,35 @@ void Player::MoveRight() {
 void Player::ResetAnimation(int position)
 {
 	if (position == 1) {
-		if (Animation == MOVINGLEFT || Animation == IDLELEFT || Animation == DASHLEFT)
-			Animation = IDLELEFT;
-		else if (Animation == MOVINGRIGHT || Animation == IDLERIGHT || Animation == DASHRIGHT)
-			Animation = IDLERIGHT;
-		else if (Animation == LUNGERIGHT)
-			Animation = CHARGERIGHT;
-		else if (Animation == LUNGELEFT)
-			Animation = CHARGELEFT;
+		if (Animation == MOVINGLEFT || Animation == IDLELEFT || Animation == DASHLEFT || Animation == MOVINGRIGHT || Animation == IDLERIGHT || Animation == DASHRIGHT) {
+			if (MouseAngleRadians > 3 * PI / 2 ||
+				MouseAngleRadians < PI / 2)
+				Animation = IDLERIGHT;
+			else
+				Animation = IDLELEFT;
+		}
+		else if (Animation == LUNGELEFT || Animation == LUNGERIGHT) {
+			if (MouseAngleRadians > 3 * PI / 2 ||
+				MouseAngleRadians < PI / 2)
+				Animation = CHARGERIGHT;
+			else
+				Animation = CHARGELEFT;
+		}
+
 		dirY = 0;
 		AnimationHandler();
 	}
-	else{
+	else {
 		dirX = 0;
 		//AnimationHandler();
 	}
 
-	
+
 }
 
 void Player::Dash(double MouseAngleRadians) {
-	dirX = sin(MouseAngleRadians + PI/2);
-	dirY = cos(MouseAngleRadians + PI/2);
+	dirX = sin(MouseAngleRadians + PI / 2);
+	dirY = cos(MouseAngleRadians + PI / 2);
 }
 void Player::Charge(int mousex) {
 	if (ChargeTime < 60)
@@ -125,8 +144,8 @@ void Player::Charge(int mousex) {
 	AnimationHandler();
 }
 void Player::Lunge(double MouseAngleRadians) {
-	dirX = sin(MouseAngleRadians + PI/2);
-	dirY = cos(MouseAngleRadians + PI/2);
+	dirX = sin(MouseAngleRadians + PI / 2);
+	dirY = cos(MouseAngleRadians + PI / 2);
 	LungeTime--;
 
 	if (dirX < 0)
@@ -198,7 +217,8 @@ void Player::AnimationHandler()
 		cout << "DASHRIGHT is not finished. get off your ass and finish it, future self." << endl;
 	}
 
-	//sets curFrame based on maxFrame
-	if (curFrame > maxFrame)
+	//sets curFrame based on maxFrame (otherwise, player will temporary disappear when it renders a position that is now greater than maxFrame)
+	if (curFrame >= maxFrame) {
 		curFrame = 0;
+	}
 }

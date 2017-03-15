@@ -136,6 +136,8 @@ int main(int argc, char **argv) {
 	ALLEGRO_SAMPLE *ChargeSuccessAudio = NULL;
 	ALLEGRO_SAMPLE *ChargeFailureAudio = NULL;
 
+	ALLEGRO_SAMPLE *SpearSpinAudio = NULL;
+
 	//==============================================
 	//ALLEGRO VARIABLES
 	//==============================================
@@ -219,9 +221,11 @@ int main(int argc, char **argv) {
 	OverheadShadowImage = al_load_bitmap("OverheadShadowImage.png");
 
 	shot = al_load_sample("Gunshot.wav");
-	song = al_load_sample("Titan.mp3");
+	song = al_load_sample("The Winding Ridge.wav");
 	ChargeSuccessAudio = al_load_sample("ChargeSuccessAudio.wav");
 	ChargeFailureAudio = al_load_sample("ChargeFailureAudio.wav");
+
+	SpearSpinAudio = al_load_sample("SpearSpinAudio.wav");
 
 	songInstance = al_create_sample_instance(song);
 	al_set_sample_instance_playmode(songInstance, ALLEGRO_PLAYMODE_LOOP);
@@ -447,6 +451,9 @@ int main(int argc, char **argv) {
 				if (playerspear->GetSpearState() == 2) {//idle state
 					playerspear->SetAngle(atan2(mousey - (player->GetY() + player->GetBoundY() / 2), mousex - (player->GetX() + player->GetBoundX() / 2)) - sqrt(2) / 2);
 				}
+				//updating player angle
+				player->SetMouseAngleRadians(P_M_AngleRadians);
+
 				//player movement/attacks
 				if (PlayerLunge == true) {//lunge, only true when Mouse Button is released
 
@@ -465,11 +472,17 @@ int main(int argc, char **argv) {
 				else if (keys[MOUSE_BUTTON]) {//charging
 
 					if (player->GetChargeTime() == 0) {//runs at beginning of charge
+						
 						player->SetChargeTime(10);//begins with small ChargeTime to make some flame regardless of amount charged
-						player->SetLungeTime(21);//setup for later lunge
+						player->SetLungeTime(21);//setup for later lunge						
 					}
-					if (player->GetChargeTime() == 20)//runs when into  charge (1/3 sec) 
+					if (player->GetChargeTime() == 20) {//runs when into  charge (1/3 sec) 
 						playerspear->SetSpearState(0);//spinning state. delayed slightly to allow for fast without making the spear twitch.
+
+						player->SetDirX(0);//makes player stationary
+						player->SetDirY(0);//delayed slightly for aesthetic purposes (no mathematic or structural reason).
+						al_play_sample(SpearSpinAudio, 1, 0, 2, ALLEGRO_PLAYMODE_ONCE, NULL);
+					}
 					playerspear->SetChargeTime(player->GetChargeTime());
 					StoredP_M_AngleRadians = P_M_AngleRadians;
 
@@ -641,6 +654,9 @@ int main(int argc, char **argv) {
 			al_flip_display();
 			al_clear_to_color(al_map_rgb(0, 0, 0));
 		}
+
+		//counts number of current objects
+		//cout << objects.size() << " of "<<objects.max_size()<< endl;
 	}//end gameloop
 
 	 //==============================================

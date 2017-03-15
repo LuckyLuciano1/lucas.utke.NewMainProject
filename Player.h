@@ -20,6 +20,8 @@ private:
 	int Animation;//tracks which animtaion is being performed by the main character
 	int ChargeTime;//tracks amount that character has charged  (affects damage of lunge)
 	int LungeTime;//travks time of Lunge (determines how lunge player lunges for)
+
+	double MouseAngleRadians;
 public:
 	Player();
 	void Destroy();
@@ -39,10 +41,16 @@ public:
 	void MoveRight();
 	void ResetAnimation(int position);
 	void Dash(double MouseAngle);
-	void Charge(int mousex);//charges attack
+	
+
 	int GetChargeTime() { return ChargeTime; }//returns how much attack is charged
 	void SetChargeTime(int ChargeTime) { Player::ChargeTime = ChargeTime; }
+	void Charge(int mousex);//charges attack
+
 	int GetLungeTime() { return LungeTime; }//returns how long lunge has been going on for
 	void SetLungeTime(int LungeTime) { Player::LungeTime = LungeTime; }
 	void Lunge(double MouseAngleRadians);//attack itself
+
+	double GetMouseAngleRadians() { return MouseAngleRadians; }
+	void SetMouseAngleRadians(double MouseAngleRadians) { Player::MouseAngleRadians = MouseAngleRadians; }
 };
