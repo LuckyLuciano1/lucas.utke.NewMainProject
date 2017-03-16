@@ -131,12 +131,10 @@ int main(int argc, char **argv) {
 	ALLEGRO_BITMAP *OverheadShadowImage = NULL;
 
 	ALLEGRO_SAMPLE *song = NULL;
-	ALLEGRO_SAMPLE *shot = NULL;
 
-	ALLEGRO_SAMPLE *ChargeSuccessAudio = NULL;
-	ALLEGRO_SAMPLE *ChargeFailureAudio = NULL;
-
+	ALLEGRO_SAMPLE *PlayerLungeAudio = NULL;
 	ALLEGRO_SAMPLE *SpearSpinAudio = NULL;
+	ALLEGRO_SAMPLE_INSTANCE *SpearSpinAudioInstance = NULL;
 
 	//==============================================
 	//ALLEGRO VARIABLES
@@ -220,17 +218,18 @@ int main(int argc, char **argv) {
 
 	OverheadShadowImage = al_load_bitmap("OverheadShadowImage.png");
 
-	shot = al_load_sample("Gunshot.wav");
+
 	song = al_load_sample("The Winding Ridge.wav");
-	ChargeSuccessAudio = al_load_sample("ChargeSuccessAudio.wav");
-	ChargeFailureAudio = al_load_sample("ChargeFailureAudio.wav");
-
-	SpearSpinAudio = al_load_sample("SpearSpinAudio.wav");
-
 	songInstance = al_create_sample_instance(song);
 	al_set_sample_instance_playmode(songInstance, ALLEGRO_PLAYMODE_LOOP);
-
 	al_attach_sample_instance_to_mixer(songInstance, al_get_default_mixer());
+
+	SpearSpinAudio = al_load_sample("SpearSpinAudio.wav");
+	SpearSpinAudioInstance = al_create_sample_instance(SpearSpinAudio);
+	al_set_sample_instance_playmode(SpearSpinAudioInstance, ALLEGRO_PLAYMODE_LOOP);
+	al_attach_sample_instance_to_mixer(SpearSpinAudioInstance, al_get_default_mixer());
+	
+	PlayerLungeAudio = al_load_sample("PlayerLungeAudio.wav");
 
 	ChangeState(TerrainImage, bgImage, CloudImage, GrassImage, ColorImage, PlayerImage, player, playerspear, CloudMap, Map, state, TITLE, PlayerPosX, PlayerPosY, cameraXPos, cameraYPos);
 
@@ -462,6 +461,8 @@ int main(int argc, char **argv) {
 					if (player->GetLungeTime() >= 20) {//runs at beginning of lunge
 						playerspear->SetSpearState(1);//lunging state
 						playerspear->SetAngle(atan2(mousey - (player->GetY() + player->GetBoundY() / 2), mousex - (player->GetX() + player->GetBoundX() / 2)) - sqrt(2) / 2);
+						al_stop_sample_instance(SpearSpinAudioInstance);
+						al_play_sample(PlayerLungeAudio, 1, 0, 1, ALLEGRO_PLAYMODE_ONCE, 0);
 					}
 					else if (player->GetLungeTime() <= 0) {//runs at end of lunge
 						PlayerLunge = false;
@@ -481,7 +482,7 @@ int main(int argc, char **argv) {
 
 						player->SetDirX(0);//makes player stationary
 						player->SetDirY(0);//delayed slightly for aesthetic purposes (no mathematic or structural reason).
-						al_play_sample(SpearSpinAudio, 1, 0, 2, ALLEGRO_PLAYMODE_ONCE, NULL);
+						al_play_sample_instance(SpearSpinAudioInstance);
 					}
 					playerspear->SetChargeTime(player->GetChargeTime());
 					StoredP_M_AngleRadians = P_M_AngleRadians;
@@ -679,7 +680,6 @@ int main(int argc, char **argv) {
 	al_destroy_bitmap(GunImage);
 	al_destroy_bitmap(BulletImage);
 
-	al_destroy_sample(shot);
 	al_destroy_sample(song);
 	al_destroy_sample_instance(songInstance);
 
