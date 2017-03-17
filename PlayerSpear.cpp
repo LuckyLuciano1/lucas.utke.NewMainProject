@@ -13,9 +13,9 @@ void PlayerSpear::Destroy()
 	GameObject::Destroy();
 }
 
-void PlayerSpear::Init(ALLEGRO_BITMAP *image, ALLEGRO_BITMAP *ref_ColorImage, double ref_x, double ref_y, double ref_SpearAngleRadians, int ref_SpearState, int ref_ChargeTime, Player *ref_player)
+void PlayerSpear::Init(ALLEGRO_BITMAP *image, ALLEGRO_BITMAP *ref_ColorImage, double ref_x, double ref_y, double ref_z, double ref_SpearAngleRadians, int ref_SpearState, int ref_ChargeTime, Player *ref_player)
 {
-	GameObject::Init(ref_x, ref_y, PLAYERVELX, PLAYERVELY, 0, 0, 1, 1, PLAYERSPEAR, TIER1C);
+	GameObject::Init(ref_x, ref_y, ref_z, PLAYERVELX, PLAYERVELY, 0, 0, 1, 1, PLAYERSPEAR, TIER1C);
 	SetCollidable(false);
 	SetOrigCollidable(false);
 
@@ -61,7 +61,7 @@ void PlayerSpear::Update(double cameraX, double cameraY, vector<GameObject*> &ob
 
 	//creates Fire effects at flame tip
 	PlayerSpearFlame *playerspearflame = new PlayerSpearFlame();
-	playerspearflame->Init(ColorImage, SpearTipX - playerspearflame->GetBoundX() / 2, SpearTipY - playerspearflame->GetBoundY() / 2, ChargeTime);
+	playerspearflame->Init(ColorImage, SpearTipX - playerspearflame->GetBoundX() / 2, SpearTipY - playerspearflame->GetBoundY() / 2, 0, ChargeTime);
 	objects.push_back(playerspearflame);
 }
 

@@ -15,7 +15,7 @@ public:
 	ShadowedBlock();
 	void Destroy();
 
-	void Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y, double image_size_x, double image_size_y);
+	void Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y, double ref_z, double image_size_x, double image_size_y);
 	void Update(double cameraX, double cameraY, vector<GameObject*> &objects);
 	void Render();
 

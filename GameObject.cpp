@@ -7,6 +7,7 @@ GameObject::GameObject()
 {
 	x = 0;
 	y = 0;
+	z = 0;
 
 	velX = 0;
 	velY = 0;
@@ -35,10 +36,11 @@ GameObject::GameObject()
 
 void GameObject::Destroy() {}
 
-void GameObject::Init(double x, double y, double velX, double velY, double dirX, double dirY, int boundX, int boundY, int ID, int TIER)
+void GameObject::Init(double x, double y, double z, double velX, double velY, double dirX, double dirY, int boundX, int boundY, int ID, int TIER)
 {
 	GameObject::x = x;
-	GameObject::y = y;//position
+	GameObject::y = y;// +z;//position
+	GameObject::z = z;
 
 	GameObject::velX = velX;
 	GameObject::velY = velY;//speed

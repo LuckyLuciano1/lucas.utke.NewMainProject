@@ -7,9 +7,9 @@ void Terrain::Destroy()
 	GameObject::Destroy();
 }
 
-void Terrain::Init(ALLEGRO_BITMAP *image, double copy_x, double copy_y, double copy_image_x, double copy_image_y, double image_size_x, double image_size_y, bool collision, int TIER)
+void Terrain::Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y, double ref_z, double ref_image_x, double ref_image_y, double image_size_x, double image_size_y, bool collision, int TIER)
 {
-	GameObject::Init(copy_x, copy_y, 6, 6, 0, 0, image_size_x, image_size_y, TERRAIN, TIER);
+	GameObject::Init(ref_x, ref_y, ref_z, 6, 6, 0, 0, image_size_x, image_size_y, TERRAIN, TIER);
 
 	if (collision == true) {
 		SetCollidable(false);//temporary, so as not to overload the system
@@ -23,8 +23,8 @@ void Terrain::Init(ALLEGRO_BITMAP *image, double copy_x, double copy_y, double c
 
 	frameWidth = image_size_x;
 	frameHeight = image_size_y;
-	image_x = copy_image_x;
-	image_y = copy_image_y;
+	image_x = ref_image_x;
+	image_y = ref_image_y;
 	if (image != NULL)
 		Terrain::image = image;
 }

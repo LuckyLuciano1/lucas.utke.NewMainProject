@@ -7,9 +7,9 @@ void Gun::Destroy()
 	GameObject::Destroy();
 }
 
-void Gun::Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y, int image_size_x, int image_size_y, double ref_MouseAngle)
+void Gun::Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y, double ref_z, int image_size_x, int image_size_y, double ref_MouseAngle)
 {
-	GameObject::Init(ref_x, ref_y, 6, 6, 0, 0, image_size_x, image_size_y, GUN, TIER1C);
+	GameObject::Init(ref_x, ref_y, ref_z, 6, 6, 0, 0, image_size_x, image_size_y, GUN, TIER1C);
 	SetCollidable(false);
 	SetOrigCollidable(false);
 	SetAlive(true);

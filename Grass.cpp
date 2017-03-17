@@ -7,9 +7,9 @@ void Grass::Destroy()
 	GameObject::Destroy();
 }
 
-void Grass::Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y, double image_size_x, double image_size_y)
+void Grass::Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y, double ref_z, double image_size_x, double image_size_y)
 {
-	GameObject::Init(ref_x, ref_y, 6, 6, 0, 0, image_size_x, image_size_y, GRASS, TIER1C);
+	GameObject::Init(ref_x, ref_y, ref_z, 6, 6, 0, 0, image_size_x, image_size_y, GRASS, TIER1C);
 
 	SetCollidable(false);
 	SetOrigCollidable(false);

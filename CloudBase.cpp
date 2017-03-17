@@ -7,9 +7,9 @@ void CloudBase::Destroy()
 	GameObject::Destroy();
 }
 
-void CloudBase::Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y, double ref_image_x, double ref_image_y, bool stable)
+void CloudBase::Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y, double ref_z, double ref_image_x, double ref_image_y, bool stable)
 {
-	GameObject::Init(ref_x, ref_y, 6, 6, 0, 0, DIMW, DIMH, CLOUDBASE, TIER0A);
+	GameObject::Init(ref_x, ref_y, ref_z, 6, 6, 0, 0, DIMW, DIMH, CLOUDBASE, TIER0A);
 	SetCollidable(false);
 	SetOrigCollidable(false);
 

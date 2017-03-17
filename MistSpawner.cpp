@@ -7,9 +7,9 @@ void MistSpawner::Destroy()
 	GameObject::Destroy();
 }
 
-void MistSpawner::Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y, int ref_MistID)
+void MistSpawner::Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y, double ref_z, int ref_MistID)
 {
-	GameObject::Init(ref_x, ref_y, PLAYERVELX - 1, PLAYERVELY - 1, 0, 0, 30, 30, MISTSPAWNER, TIER1C);
+	GameObject::Init(ref_x, ref_y, ref_z, PLAYERVELX - 1, PLAYERVELY - 1, 0, 0, 30, 30, MISTSPAWNER, TIER1C);
 	SetCollidable(false);
 	SetOrigCollidable(false);
 
@@ -52,7 +52,7 @@ void MistSpawner::Update(double cameraX, double cameraY, vector<GameObject*> &ob
 		SetAlive(false);
 
 	Mist *mist = new Mist();//creates mist effect. basis of entire object.
-	mist->Init(image, x, y, MistID);
+	mist->Init(image, x, y, z, MistID);
 	objects.push_back(mist);
 
 	if (TargetFound == false) {//searches for target once, then never again.

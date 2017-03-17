@@ -26,7 +26,7 @@ public:
 	Player();
 	void Destroy();
 
-	void Init(ALLEGRO_BITMAP *image, ALLEGRO_BITMAP *ref_ColorImage, double ref_x, double ref_y, int ref_dir_x, int ref_dir_y, int ref_vel_x, int ref_vel_y);
+	void Init(ALLEGRO_BITMAP *image, ALLEGRO_BITMAP *ref_ColorImage, double ref_x, double ref_y, double ref_z, int ref_dir_x, int ref_dir_y, int ref_vel_x, int ref_vel_y);
 	void Update(double cameraX, double cameraY, vector<GameObject*> &objects);
 	void Render();
 

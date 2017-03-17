@@ -526,7 +526,7 @@ int main(int argc, char **argv) {
 				if (keys[NUM_2])//temp
 				{
 					Cultist *cultist = new Cultist();
-					cultist->Init(CultistImage, mousex, mousey);
+					cultist->Init(CultistImage, mousex, mousey, FLOORLAYER);
 					objects.push_back(cultist);
 					units.push_back(cultist);
 					keys[NUM_2] = false;
@@ -534,21 +534,21 @@ int main(int argc, char **argv) {
 				if (keys[NUM_3])
 				{
 					MistSpawner *mistspawner = new MistSpawner();
-					mistspawner->Init(ColorImage, mousex, mousey, SMOKE);
+					mistspawner->Init(ColorImage, mousex, mousey, FLOORLAYER, SMOKE);
 					objects.push_back(mistspawner);
 					keys[NUM_3] = false;
 				}
 				if (keys[NUM_4])
 				{
 					MistSpawner *mistspawner = new MistSpawner();
-					mistspawner->Init(ColorImage, mousex, mousey, WISP);
+					mistspawner->Init(ColorImage, mousex, mousey, FLOORLAYER, WISP);
 					objects.push_back(mistspawner);
 					keys[NUM_4] = false;
 				}
 				if (keys[NUM_5])
 				{
 					MistSpawner *mistspawner = new MistSpawner();
-					mistspawner->Init(ColorImage, mousex, mousey, FIRE);
+					mistspawner->Init(ColorImage, mousex, mousey, FLOORLAYER, FIRE);
 					objects.push_back(mistspawner);
 					keys[NUM_5] = false;
 				}
@@ -582,7 +582,7 @@ int main(int argc, char **argv) {
 						//if ((*iter)->GetID() == TERRAIN_FULL && (*iter2)->GetID() == TERRAIN_EMPTY) continue;
 
 						if ((*iter)->GetID() == (*iter2)->GetID()) continue;//if same type of object
-						if ((*iter)->GetTier() != (*iter2)->GetTier()) continue;//if on different tier
+						//if ((*iter)->GetTier() != (*iter2)->GetTier()) continue;//if on different tier
 
 						if (!(*iter2)->Collidable()) continue;//if object isnt collidable/alive, stop here
 
@@ -733,8 +733,8 @@ void ChangeState(ALLEGRO_BITMAP *TerrainImage, ALLEGRO_BITMAP *bgImage, ALLEGRO_
 			}
 		}
 
-		player->Init(PlayerImage, ColorImage, PlayerPosX, PlayerPosY, 0, 0, PLAYERVELX, PLAYERVELY);
-		playerspear->Init(PlayerImage, ColorImage, PlayerPosX, PlayerPosY, 0, 2, 0, player);
+		player->Init(PlayerImage, ColorImage, PlayerPosX, PlayerPosY, FLOORLAYER, 0, 0, PLAYERVELX, PLAYERVELY);
+		playerspear->Init(PlayerImage, ColorImage, PlayerPosX, PlayerPosY, FLOORLAYER, 0, 2, 0, player);
 		for (iter = objects.begin(); iter != objects.end(); ++iter)
 		{
 			if ((*iter)->GetID() == PLAYER || (*iter)->GetID() == PLAYERSPEAR)
@@ -1081,7 +1081,7 @@ void AllegroOverlay(ALLEGRO_BITMAP *TerrainImage, ALLEGRO_BITMAP *bgImage, ALLEG
 		for (int x = 0; x < MAPW; x++) {
 			if (CloudMap[y][x] == 1) {
 				CloudBase *cloudbase = new CloudBase();
-				cloudbase->Init(ColorImage, x*DIMW - cameraXPos, y*DIMH - cameraYPos, 0, 1000, true);
+				cloudbase->Init(ColorImage, x*DIMW - cameraXPos, y*DIMH - cameraYPos, CLOUDLAYER, 0, 1000, true);
 				objects.push_back(cloudbase);
 			}
 		}
@@ -1090,7 +1090,7 @@ void AllegroOverlay(ALLEGRO_BITMAP *TerrainImage, ALLEGRO_BITMAP *bgImage, ALLEG
 		for (int x = 0; x < MAPW; x++) {
 			if (CloudMap[y][x] == 1) {
 				CloudBase *cloudbase = new CloudBase();
-				cloudbase->Init(ColorImage, x*DIMW - cameraXPos, y*DIMH - cameraYPos, 0, 1000, false);
+				cloudbase->Init(ColorImage, x*DIMW - cameraXPos, y*DIMH - cameraYPos, CLOUDLAYER, 0, 1000, false);
 				objects.push_back(cloudbase);
 			}
 		}
@@ -1181,12 +1181,12 @@ void AllegroOverlay(ALLEGRO_BITMAP *TerrainImage, ALLEGRO_BITMAP *bgImage, ALLEG
 		for (int x = 0; x < MAPW; x++) {
 			if (Map[y][x] == GRASS_BASE || Map[y][x] == SCAFFOLD_BASE || Map[y][x] == MIX_SCAFFOLD_BRICK_LEFT_BASE || Map[y][x] == MIX_SCAFFOLD_BRICK_RIGHT_BASE || Map[y][x] == MIX_GRASS_BRICK_LEFT_BASE || Map[y][x] == MIX_GRASS_BRICK_RIGHT_BASE) {
 				ShadowedBlock *shadowedblock = new ShadowedBlock();
-				shadowedblock->Init(TerrainImage, x*DIMW - cameraXPos, y*DIMH + 8 - cameraYPos, DIMW, DIMH - 8);
+				shadowedblock->Init(TerrainImage, x*DIMW - cameraXPos, y*DIMH + 8 - cameraYPos, FLOORLAYER, DIMW, DIMH - 8);
 				objects.push_back(shadowedblock);
 			}
 			if (Map[y][x] == BRICK_BASE) {
 				ShadowedBlock *shadowedblock = new ShadowedBlock();
-				shadowedblock->Init(TerrainImage, x*DIMW - cameraXPos, (y*DIMH + 8) - cameraYPos, DIMW, DIMH - 8);
+				shadowedblock->Init(TerrainImage, x*DIMW - cameraXPos, (y*DIMH + 8) - cameraYPos, FLOORLAYER, DIMW, DIMH - 8);
 				objects.push_back(shadowedblock);
 			}
 		}
@@ -1208,7 +1208,7 @@ void AllegroOverlay(ALLEGRO_BITMAP *TerrainImage, ALLEGRO_BITMAP *bgImage, ALLEG
 			if (Map[y][x] == GRASS_FLOOR || Map[y][x] == MIX_GRASS_BRICK_RIGHT_FLOOR || Map[y][x] == MIX_GRASS_BRICK_LEFT_FLOOR) {
 				for (int a = 0; a <= 4; a++) {
 					Grass *grass = new Grass();
-					grass->Init(GrassImage, (x*DIMW + (rand() % (DIMW - 16))) - cameraXPos, (y*DIMH + (rand() % (DIMH - 28))) - cameraYPos, 20, 24);
+					grass->Init(GrassImage, (x*DIMW + (rand() % (DIMW - 16))) - cameraXPos, (y*DIMH + (rand() % (DIMH - 28))) - cameraYPos, FLOORLAYER, 20, 24);
 					objects.push_back(grass);
 				}
 			}
@@ -1240,7 +1240,7 @@ void AllegroOverlay(ALLEGRO_BITMAP *TerrainImage, ALLEGRO_BITMAP *bgImage, ALLEG
 void Render(ALLEGRO_BITMAP *Image, double game_x, double game_y, int image_x, int image_y, int size_x, int size_y, double cameraXPos, double cameraYPos, bool collision, int TIER)
 {
 	Terrain *terrain = new Terrain();
-	terrain->Init(Image, (game_x*DIMW) - cameraXPos, (game_y*DIMH) - cameraYPos, DIMW*image_x, DIMH*image_y, size_x, size_y, collision, TIER);
+	terrain->Init(Image, (game_x*DIMW) - cameraXPos, (game_y*DIMH) - cameraYPos, FLOORLAYER, DIMW*image_x, DIMH*image_y, size_x, size_y, collision, TIER);
 	objects.push_back(terrain);
 }
 

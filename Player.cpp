@@ -11,11 +11,11 @@ void Player::Destroy()
 	GameObject::Destroy();
 }
 
-void Player::Init(ALLEGRO_BITMAP *image, ALLEGRO_BITMAP *ref_ColorImage, double ref_x, double ref_y, int ref_dir_x, int ref_dir_y, int ref_vel_x, int ref_vel_y)
+void Player::Init(ALLEGRO_BITMAP *image, ALLEGRO_BITMAP *ref_ColorImage, double ref_x, double ref_y, double ref_z, int ref_dir_x, int ref_dir_y, int ref_vel_x, int ref_vel_y)
 {
 	frameWidth = 39;
 	frameHeight = 96;
-	GameObject::Init(ref_x, ref_y, ref_vel_x, ref_vel_y, ref_dir_x, ref_dir_y, frameWidth, frameHeight, PLAYER, TIER1C);
+	GameObject::Init(ref_x, ref_y, ref_z, ref_vel_x, ref_vel_y, ref_dir_x, ref_dir_y, frameWidth, frameHeight, PLAYER, TIER1C);
 	SetID(PLAYER);
 	SetAlive(true);
 	SetCollidable(true);
@@ -48,7 +48,7 @@ void Player::Update(double cameraX, double cameraY, vector<GameObject*> &objects
 
 	if (dirX != 0 || dirY != 0) {//creation of dust when player moves 
 		Dust *dust = new Dust();
-		dust->Init(ColorImage, x, y + frameHeight - frameWidth, frameWidth, frameWidth);
+		dust->Init(ColorImage, x, y + frameHeight - frameWidth, z, frameWidth, frameWidth);
 		objects.push_back(dust);
 	}
 }
@@ -191,21 +191,21 @@ void Player::AnimationHandler()
 		maxFrame = 1;
 	}
 	else if (Animation == LUNGELEFT) {
-		curAnim = (97 * 6) / 69;
+		curAnim = (97 * 6) / 72;
 		maxFrame = 1;
-		frameWidth = 69;
+		frameWidth = 72;
 		frameHeight = 72;
-		boundX = 69;
+		boundX = 72;
 		boundY = 72;
 		velX = PLAYERVELX*(sqrt(LungeTime));
 		velY = PLAYERVELY*(sqrt(LungeTime));
 	}
 	else if (Animation == LUNGERIGHT) {
-		curAnim = (97 * 7) / 69;
+		curAnim = (97 * 7) / 72;
 		maxFrame = 1;
-		frameWidth = 69;
+		frameWidth = 72;
 		frameHeight = 72;
-		boundX = 69;
+		boundX = 72;
 		boundY = 72;
 		velX = PLAYERVELX*(sqrt(LungeTime));
 		velY = PLAYERVELY*(sqrt(LungeTime));

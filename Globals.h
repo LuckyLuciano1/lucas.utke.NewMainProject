@@ -50,6 +50,14 @@ enum TIER {	TIER0A, TIER0B, TIER0C,//background + base, clouds
 			TIER2A, TIER2B //any screen effects, etc
 };
 
+//z position shorthands
+const int SKYLAYER = 0 * DIMH;
+const int CLOUDLAYER = 1 * DIMH;
+const int BASELAYER = 2 * DIMH;
+const int FLOORLAYER = 3 * DIMH;
+const int WALLLAYER = 4 * DIMH;
+const int ROOFLAYER = 5 * DIMH;
+
 enum STATE { TITLE, PLAYING, LOST };
 enum MistType { SMOKE, FIRE, WISP };//side thingy for minor "Mist" effect
 

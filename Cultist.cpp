@@ -7,11 +7,11 @@ void Cultist::Destroy()
 	Units::Destroy();
 }
 
-void Cultist::Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y)
+void Cultist::Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y, double ref_z)
 {
 	frameWidth = 39;
 	frameHeight = 96;
-	Units::Init(ref_x, ref_y, PLAYERVELX - 1, PLAYERVELY - 1, 0, 0, frameWidth, frameHeight, CULTIST, TIER1C, 0, 5);
+	Units::Init(ref_x, ref_y, ref_z, PLAYERVELX - 1, PLAYERVELY - 1, 0, 0, frameWidth, frameHeight, CULTIST, TIER1C, 0, 5);
 	SetAlive(true);
 	SetCollidable(false);
 	SetOrigCollidable(false);
@@ -21,6 +21,8 @@ void Cultist::Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y)
 
 	maxFrame = 4;
 	curFrame = 1;
+
+	TargetFound = false;
 
 	Animation = IDLELEFT;
 	AnimationHandler();

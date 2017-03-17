@@ -6,7 +6,7 @@ void PlayerSpearFlame::Destroy()
 	GameObject::Destroy();
 }
 
-void PlayerSpearFlame::Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y, int ref_Multiplier)
+void PlayerSpearFlame::Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y, double ref_z, int ref_Multiplier)
 {
 
 	RandDirX = (rand() % 20);
@@ -20,7 +20,7 @@ void PlayerSpearFlame::Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y, i
 	frameWidth = RandSize;
 	frameHeight = RandSize;
 
-	GameObject::Init(ref_x, ref_y, 2, 2, RandDirX / 100, RandDirY / 100, frameWidth, frameHeight, PLAYERSPEARFLAME, TIER1C);
+	GameObject::Init(ref_x, ref_y, ref_z, 2, 2, RandDirX / 100, RandDirY / 100, frameWidth, frameHeight, PLAYERSPEARFLAME, TIER1C);
 
 	SetCollidable(false);
 	SetOrigCollidable(false);

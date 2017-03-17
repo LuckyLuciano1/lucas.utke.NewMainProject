@@ -15,9 +15,9 @@ Units::Units() {
  curFrame increases until it hits maxFrame, at which point it resets (decided in Update)
  curAnim and maxFrame are decided by the Action variable, which keeps track of which ACTION state the unit is in. curAnim and maxFrame are decided within StateHandler.
  */
-void Units::Init(double x, double y, double velX, double velY, double dirX, double dirY, int boundX, int boundY, int ID, int TIER, int timer, int health)
+void Units::Init(double x, double y, double z, double velX, double velY, double dirX, double dirY, int boundX, int boundY, int ID, int TIER, int timer, int health)
 {
-	GameObject::Init(x, y, velX, velY, dirX, dirY, boundX, boundY, ID, TIER);
+	GameObject::Init(x, y, z, velX, velY, dirX, dirY, boundX, boundY, ID, TIER);
 	Units::timer = timer;
 	Units::health = health;
 }

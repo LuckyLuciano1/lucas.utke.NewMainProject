@@ -7,9 +7,9 @@ void Bird::Destroy()
 	Units::Destroy();
 }
 
-void Bird::Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y, int image_size_x, int image_size_y, int ref_dir_x, int ref_dir_y, int ref_vel_x, int ref_vel_y, int ref_health)
+void Bird::Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y, double ref_z, int image_size_x, int image_size_y, int ref_dir_x, int ref_dir_y, int ref_vel_x, int ref_vel_y, int ref_health)
 {
-	Units::Init(ref_x, ref_y, ref_vel_x, ref_vel_y, ref_dir_x, ref_dir_y, image_size_x, image_size_y, BIRD, TIER1C, 0, ref_health);
+	Units::Init(ref_x, ref_y, ref_z, ref_vel_x, ref_vel_y, ref_dir_x, ref_dir_y, image_size_x, image_size_y, BIRD, TIER1C, 0, ref_health);
 	SetAlive(true);
 	SetCollidable(true);
 	SetOrigCollidable(true);

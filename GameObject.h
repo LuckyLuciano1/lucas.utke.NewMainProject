@@ -21,6 +21,8 @@ protected:
 	double x;//position of object within game
 	double y;
 
+	double z;//pseudo-height variable. does not require Vel or Dir, as it merely adds to y to produce displacement.
+
 	double velX;//speed of object within game
 	double velY;
 
@@ -48,15 +50,17 @@ public:
 	int TIER;//these are public in order to properly sort objects with minimal processing
 	double BaseY;
 
-	void Init(double x, double y, double velX, double velY, double dirX, double dirY, int boundX, int boundY, int ID, int TIER);
+	void Init(double x, double y, double z, double velX, double velY, double dirX, double dirY, int boundX, int boundY, int ID, int TIER);
 	void virtual Update(double cameraX, double cameraY, vector<GameObject*> &objects);
 	void virtual Render();
 
 	double GetX() { return x; }
 	double GetY() { return y; }
+	double GetZ() { return z; }
 
 	void SetX(double x) { GameObject::x = x; }
 	void SetY(double y) { GameObject::y = y; }
+	void SetZ(double z) { GameObject::z = z; }
 
 	double GetDirX() { return dirX; }
 	double GetDirY() { return dirY; }
@@ -72,9 +76,6 @@ public:
 
 	int GetID() { return ID; }
 	void SetID(int ID) { GameObject::ID = ID; }
-
-	int GetTier() { return TIER; }
-	void SetTier(int TIER) { GameObject::TIER = TIER; }
 
 	double GetBaseY() { return BaseY; }
 	void SetBaseY(double BaseY) { GameObject::BaseY = BaseY; }

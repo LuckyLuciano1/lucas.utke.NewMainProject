@@ -24,7 +24,7 @@ public:
 	PlayerSpear();
 	void Destroy();
 
-	void Init(ALLEGRO_BITMAP *image, ALLEGRO_BITMAP *ColorImage, double ref_x, double ref_y, double ref_SpearAngleRadians, int ref_SpearState, int ref_ChargeTime, Player *ref_player);
+	void Init(ALLEGRO_BITMAP *image, ALLEGRO_BITMAP *ColorImage, double ref_x, double ref_y, double ref_z, double ref_SpearAngleRadians, int ref_SpearState, int ref_ChargeTime, Player *ref_player);
 	void Update(double cameraX, double cameraY, vector<GameObject*> &objects);
 	void Render();
 

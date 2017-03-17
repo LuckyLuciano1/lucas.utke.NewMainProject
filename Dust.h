@@ -18,7 +18,7 @@ public:
 	Dust();
 	void Destroy();
 
-	void Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y, int ref_SpawnSize_x, int ref_SpawnSize_y);
+	void Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y, double ref_z, int ref_SpawnSize_x, int ref_SpawnSize_y);
 	void Update(double cameraX, double cameraY, vector<GameObject*> &objects);
 	void Render();
 

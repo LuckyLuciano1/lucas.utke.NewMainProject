@@ -7,9 +7,9 @@ void ShadowedBlock::Destroy()
 	GameObject::Destroy();
 }
 
-void ShadowedBlock::Init(ALLEGRO_BITMAP *image, double copy_x, double copy_y, double image_size_x, double image_size_y)
+void ShadowedBlock::Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y, double ref_z, double image_size_x, double image_size_y)
 {
-	GameObject::Init(copy_x, copy_y, 6, 6, 0, 0, image_size_x, image_size_y, SHADOWEDBLOCK, TIER0C);
+	GameObject::Init(ref_x, ref_y, ref_z, 6, 6, 0, 0, image_size_x, image_size_y, SHADOWEDBLOCK, TIER0C);
 
 	SetCollidable(false);
 	SetOrigCollidable(false);

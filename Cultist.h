@@ -16,7 +16,7 @@ public:
 	Cultist();
 	void Destroy();
 
-	void Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y);
+	void Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y, double ref_z);
 	void Update(double cameraX, double cameraY, vector<GameObject*> &objects);
 	void Render();
 

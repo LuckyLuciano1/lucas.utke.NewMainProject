@@ -7,9 +7,9 @@ void InvisibleTile::Destroy()
 	GameObject::Destroy();
 }
 
-void InvisibleTile::Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y, double ref_image_x, double ref_image_y, double image_size_x, double image_size_y, int TIER)
+void InvisibleTile::Init(ALLEGRO_BITMAP *image, double ref_x, double ref_y, double ref_z, double ref_image_x, double ref_image_y, double image_size_x, double image_size_y, int TIER)
 {
-	GameObject::Init(ref_x, ref_y, 6, 6, 0, 0, image_size_x, image_size_y, INVISIBLETILE, TIER);
+	GameObject::Init(ref_x, ref_y, ref_z, 6, 6, 0, 0, image_size_x, image_size_y, INVISIBLETILE, TIER);
 
 	//collision will always be true
 	SetCollidable(true);
